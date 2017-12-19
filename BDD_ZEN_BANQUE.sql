@@ -89,15 +89,14 @@ delimiter |
 drop function if exists creation_compte|
 create function creation_compte(
     in_individu_id integer, 
-    in_departement_id int(2),
     in_libelle varchar(255),                   
-    in_cle_rib int(2),
 	in_type_compte char(1)/*C pour courant / E pour épargne*/					)
 returns varchar(11)
 begin
 	declare	var_numero_compte_int bigint;
     declare	var_numero_compte_char varchar(11);
     declare var_agence_id int;
+	declare var_departement int;
     /*
         La colonne numéro de compte est untype varchar de façon à avoir une longueur fixe car les int n'accepte pas les 0 devant
         On caste la colonne numero_compte pour faire un max+1 lors de la création de façon à avoir une gestion simplifiée de celui ci
@@ -109,18 +108,28 @@ begin
     	set var_numero_compte_char = CAST(var_numero_compte_int AS char(11));
     end if;        
     
-    select id into var_agence_id from agences where departement = in_departement_id;
+	select left(code_postal, 2) into var_departement from individus where id = in_individu_id;
+	select id into var_agence_id from agences where departement = var_departement;
+	
     /* 
         si le code postal n'existe pas dans la table des agences, on créé celle ci
     */
     if var_agence_id is null then
-        insert into agences(email, departement, code_agence, code_banque) values (concat('zenbanque', in_departement_id, '@gmail.com'), in_departement_id, concat(in_departement_id, '000'), 17515);
-        select id into var_agence_id from agences where departement = in_departement_id;
+        insert into agences(email, departement, code_agence, code_banque) values (concat('zenbanque', var_departement, '@gmail.com'), var_departement, concat(var_departement, '000'), 17515);
+        select id into var_agence_id from agences where departement = var_departement;
     end if;    
     
     /* création du compte */
-    insert into comptes(numero_compte, libelle, cle_rib, type_compte, agence_id, individu_id) values (var_numero_compte_char, in_libelle, in_cle_rib, in_type_compte, var_agence_id, in_individu_id);
-        
+	begin
+		declare var_cle_rib int;
+		if in_type_compte = 'C' then
+			set var_cle_rib = 23;
+		else
+			set var_cle_rib = 25;
+		end if;
+		insert into comptes(numero_compte, libelle, cle_rib, type_compte, agence_id, individu_id) values (var_numero_compte_char, in_libelle, var_cle_rib, in_type_compte, var_agence_id, in_individu_id);
+    end;
+    
     /* historisation */
     call historisation(in_individu_id, concat('CREATION DU COMPTE ', var_numero_compte_char));
     
@@ -188,7 +197,7 @@ begin
     /* création du compte courant */  
     begin    
         declare var_numero_compte varchar(11);
-        select creation_compte(var_individu_id, left(in_code_postal, 2), 'Compte courant', 23, 'C') into var_numero_compte;    
+        select creation_compte(var_individu_id, 'Compte courant', 'C') into var_numero_compte;    
         insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Offre de bienvennue', 'C', 100.00, CURDATE(), 'V', var_numero_compte);
     end;
         
@@ -199,7 +208,7 @@ begin
 end|
 
 /* INITIALISATION DES INDIVIDUS*/
-select creation_individu('MME', 'CABOT', 'CABOT', 'Sandra', '1978-05-03', 'sandrac.cabot@gmail.com', null, null, 'avenue du général de gaulle', 94160, 'SAINT MANDE')|
+select creation_individu('MME', 'CABOT', 'CABOT', 'Sandra', '1978-05-03', 'scabot@hotmail.com', null, null, 'avenue du général de gaulle', 94160, 'SAINT MANDE')|
 select creation_individu('M', 'DUVERT', '', 'Alexandre', '1971-06-28', 'aduvert@noos.fr', null, null, '5 passage national', 75013, 'Paris 13')|
 select creation_individu('M', 'MARTINEZ', '', 'Arnaud', '1974-09-12', 'amartinez@gmail.com', null, null, 'avenue Albert Perrault', 94370, 'Sucy en Brie')|
 select creation_individu('M', 'ALI', '', 'Baba', '1971-06-28', 'ababa@hotmail.fr', null, null, '5 passage national', 92014, 'Nanterre')|

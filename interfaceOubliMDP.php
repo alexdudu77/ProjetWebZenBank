@@ -1,4 +1,21 @@
-<!DOCTYPE html>
+<?php
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      require "traitement.php";
+      $email = $_POST['identifiantClient'];
+      if (!testExistanceClient($email)){
+        if (generationMDP($email)) {
+          header('Location:login.php');
+        }
+        else {
+          $err = "Le login n'existe pas";
+        }
+      }
+      else{
+        $err = "Le login n'existe pas";
+      }
+  }
+ ?>
+
 <html lang="fr">
 <head>
   <title>Rejoindre Zen Bank</title>
@@ -19,28 +36,35 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>                       
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">Zen Bank</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
+        <li class="active"><a href="index.php">Home</a></li>
       </ul>
     </div>
   </div>
 </nav>
   <div class="container-fluid">
-    <div class="col-md-12 text-left"> 
+    <div class="col-md-12 text-left">
       <h2>Saisie de votre identifiant</h2>
       <br>
       <div class="col-md-6">
-      <form method="post" action="A MODIFIER.PHP">
+      <form method="post" action="">
+        <div href="message">
+            <?php
+              if (isset($err)){
+                echo $err;
+              }
+            ?>
+        </div>
         <div class="form-group">
           <label for="titre">Identifiant *</label>
-          <input type="text" name="identifiantClient" id="identifiantClient" placeholder="Saisissez votre identifiant" size="30">
+          <input type="email" name="identifiantClient" id="identifiantClient" placeholder="Saisissez votre identifiant" size="30" required>
         </div>
-        <a href="index.php"><button type="button" class="btn btn-info">Annuler</button></a>
+        <a href="index.html"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">R&eacute;initialiser mon mot de passe</button>
       </form>
       </div>
@@ -56,4 +80,3 @@
 
 </body>
 </html>
-

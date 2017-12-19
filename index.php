@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="fr">
 <head>
   <title>Accueil Zen Bank</title>
@@ -24,6 +24,9 @@
         <li class="active"><a href="#">Home</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <div>
+        <a href="login.php" class="btn btn-info">Mon Compte <span class="glyphicon glyphicon-log-in"></span></a>
+      </div>
         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#connexionModal">
           Connexion <span class="glyphicon glyphicon-log-in"></span>
         </button>
@@ -44,7 +47,7 @@
                 <div class="form-group">
                   <label for="pwd">Password:</label>
                   <input type="password" class="form-control" id="passClient" placeholder="Saisissez votre mot de passe"><span class="glyphicon glyphicon-keys"></span>
-                  <a href="interfaceOubliMDP.php">Mot de passe oubli&eacute;?</a>
+                  <a href="interfaceOubliMDP.html">Mot de passe oubli&eacute;?</a>
                 </div>
               </div>
               <div class="modal-footer">
@@ -75,7 +78,7 @@
         <div class="carousel-caption">
           <h3>Soyez Zen, on s'occupe de tout</h3>
           <a href="interfaceNouveauClient.php" class="btn btn-info">Devenir client <span class="glyphicon glyphicon-chevron-right"></span></a>
-        </div>      
+        </div>
       </div>
 
       <div class="item">
@@ -83,7 +86,7 @@
         <div class="carousel-caption">
           <h3>Une banque pr&eacute;sente partout dans le monde</h3>
           <p>Choisir Zen Bank, c'est se sentir chez soi partout dans le monde</p>
-        </div>      
+        </div>
       </div>
 
       <div class="item">
@@ -91,7 +94,7 @@
         <div class="carousel-caption">
           <h3>100 € offerts</h3>
           <p>Si vous ouvrez un compte chez Zen Bank, vous recevrez 100€ de bienvenue</p>
-        </div>      
+        </div>
       </div>
     </div>
 
@@ -105,8 +108,8 @@
       <span class="sr-only">Next</span>
     </a>
 </div>
-  
-<div class="container text-center">    
+
+<div class="container text-center">
   <div class="row">
     <div class="col-sm-4">
       <h3>Offre &eacute;tudiant</h3><br>
@@ -116,7 +119,7 @@
     <div class="col-sm-4">
       <h3>Cr&eacute;dit immobilier</h3><br>
       <img src="images/house.jpg" class="img-responsive" style="width:100%" alt="Image">
-      <p>Profitez des taux les plus bas du march&eacute pour acheter votre bien immobilier.</p>    
+      <p>Profitez des taux les plus bas du march&eacute pour acheter votre bien immobilier.</p>
     </div>
     <div class="col-sm-4">
       <br>

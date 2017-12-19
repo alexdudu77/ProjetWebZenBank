@@ -1,4 +1,51 @@
-<!DOCTYPE html>
+<?php
+
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Controle sur la civilité qui ne peut être mise sur le composant directement
+    if (!isset($_POST["telephoneMobileClient"]) && !isset($_POST["telephoneFixeClient"])
+      && empty($_POST["telephoneMobileClient"]) && empty($_POST["telephoneFixeClient"]))
+    {
+      $err = "Un mobile ou un fixe est obligatoire";
+    }
+
+    if (!isset($err)){
+      if (isset($_POST["emailClient"])){
+        require "traitement.php";
+
+        $email = $_POST["emailClient"];
+        if (!testExistanceClient($email)) {
+          $titre = $_POST["titre"];
+          $nom =  $_POST["nomClient"];
+          $prenom = $_POST["prenomClient"];
+          $datenaissance = $_POST["dateNaissanceClient"];
+          $adresse = $_POST["adresseClient"];
+          $cp = $_POST["codePostalClient"];
+          $ville = $_POST["villeClient"];
+          if (isset($_POST["telephoneMobileClient"])){
+            $portable = $_POST["telephoneMobileClient"];
+          }else{$portable="";}
+          if (isset($_POST["telephoneMobileClient"])){
+            $fixe = $_POST["telephoneFixeClient"];
+          }else{
+            $fixe="";
+          }
+
+    			if (nouveauclient($titre, $nom, $prenom, $datenaissance, $email, $portable, $fixe, $adresse, $cp, $ville)) {
+              header('Location:index.html');
+    			}
+          else{
+            $err = "Erreur SQL";
+    			}
+        } else {
+            $err = "L'individu existe déjà";
+        }
+      }else{
+        $err = "Email obligatoire";
+      }
+    }
+  }
+?>
+
 <html lang="fr">
 <head>
   <title>Rejoindre Zen Bank</title>
@@ -19,7 +66,7 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>                       
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">Zen Bank</a>
     </div>
@@ -31,58 +78,61 @@
   </div>
 </nav>
   <div class="container-fluid">
-    <div class="col-md-12 text-left"> 
+    <div class="col-md-12 text-left">
       <h2>Saisie de vos informations personnelles</h2>
       <br>
       <div class="col-md-3">
-      <form method="post" action="A MODIFIER.PHP">
+      <form method="post" action="">
+        <div style="color:red">
+          <?php  if (isset($err)) { echo $err; } ?>
+        </div>
         <div class="form-group">
           <label for="titre">Titre *</label>
           <div class="form-group" id="titre">
-            <input type="radio" id="monsieur" name="titre">
+            <input type="radio" id="monsieur" name="titre" value="M">
             <label>  Monsieur </label>
-            <input type="radio" id="madame" name="titre">
+            <input type="radio" id="madame" name="titre" value="MME">
             <label>  Madame </label>
           </div>
         </div>
         <div class="form-group">
           <label for="nomClient">Nom d'usage *</label>
-          <input type="text" class="form-control" id="nomClient" placeholder="Saisissez votre nom" size="40" maxlength="30" required>
+          <input type="text" class="form-control" name="nomClient" placeholder="Saisissez votre nom" size="40" maxlength="30" required>
         </div>
         <div class="form-group">
           <label for="prenomClient">Pr&eacute;nom *</label>
-          <input type="text" class="form-control" id="prenomClient" placeholder="Saisissez votre pr&eacute;nom" size="40" maxlength="30" required>
+          <input type="text" class="form-control" name="prenomClient" placeholder="Saisissez votre pr&eacute;nom" size="40" maxlength="30" required>
         </div>
         <div class="form-group">
           <label for="dateNaissanceClient">Date de naissance *</label>
-          <input type="date" class="form-control" id="dateNaissanceClient" required>
+          <input type="date" class="form-control" name="dateNaissanceClient" required>
         </div>
         <div class="form-group">
           <label for="emailClient">E-mail *</label>
-          <input type="email" class="form-control" id="emailClient" required>
+          <input type="email" class="form-control" name="emailClient" required>
         </div>
         <h3 id="coordonnees">Vos coordonnées</h3>
         <div class="form-group">
           <label for="adresseClient">Adresse *</label>
-          <input type="text" class="form-control" id="adresseClient" required>
+          <input type="text" class="form-control" name="adresseClient" required>
         </div>
         <div class="form-group">
           <label for="codePostalClient">Code postal *</label>
-          <input type="text" class="form-control" id="codePostalClient" required>
+          <input type="text" class="form-control" name="codePostalClient" required>
         </div>
         <div class="form-group">
           <label for="villeClient">Ville *</label>
-          <input type="text" class="form-control" id="villeClient" required>
+          <input type="text" class="form-control" name="villeClient" required>
         </div>
         <div class="form-group">
           <label for="telephoneMobileClient">T&eacute;l&eacute;phone Mobile</label>
-          <input type="tel" class="form-control" id="telephoneMobileClient">
+          <input type="tel" class="form-control" name="telephoneMobileClient">
         </div>
         <div class="form-group">
           <label for="telephoneFixeClient">T&eacute;l&eacute;phone Fixe</label>
-          <input type="tel" class="form-control" id="telephoneFixeClient">
+          <input type="tel" class="form-control" name="telephoneFixeClient">
         </div>
-        <a href="index.php"><button type="button" class="btn btn-info">Annuler</button></a>
+        <a href="index.html"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Envoyer ma demande</button>
       </form>
       </div>
@@ -98,4 +148,3 @@
 
 </body>
 </html>
-
