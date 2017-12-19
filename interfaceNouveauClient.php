@@ -82,7 +82,7 @@
           <label for="telephoneFixeClient">T&eacute;l&eacute;phone Fixe</label>
           <input type="tel" class="form-control" id="telephoneFixeClient">
         </div>
-        <a href="index.html"><button type="button" class="btn btn-info">Annuler</button></a>
+        <a href="index.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Envoyer ma demande</button>
       </form>
       </div>

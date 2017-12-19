@@ -19,16 +19,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="index.html">Zen Bank</a>
+      <a class="navbar-brand" href="index.php">Zen Bank</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="index.html">Home</a></li>
-        <li class="active"><a href="interfaceClientSyntheseCompte.html">Mon espace client</a></li>
+        <li class="active"><a href="index.php">Home</a></li>
+        <li class="active"><a href="interfaceClientSyntheseCompte.php">Mon espace client</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><h2 id="messageBienvenue">Bonjour client</h2></li>
-        <li><a href="index.html"><button type="button" class="btn btn-danger">
+        <li><a href="index.php"><button type="button" class="btn btn-danger">
           Se déconnecter <span class="glyphicon glyphicon-log-out"></span>
         </button></a></li>
       </ul>
@@ -53,7 +53,7 @@
               <table class="table">
                 <tr>
                   <td>
-                    <a href="interfaceClientInformations.html">Mettre à jour de mes informations</a>
+                    <a href="interfaceClientInformations.php">Mettre à jour de mes informations</a>
                   </td>
                 </tr>
               </table>
@@ -72,17 +72,17 @@
               <table class="table">
                 <tr>
                   <td>
-                    <a href="interfaceClientSyntheseCompte.html">Synthèse</a>
+                    <a href="interfaceClientSyntheseCompte.php">Synthèse</a>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <a href="interfaceClientHistoriqueCompte.html">Historique des opérations</a>
+                    <a href="interfaceClientHistoriqueCompte.php">Historique des opérations</a>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <a href="interfaceClientRIB.html">RIB</a>
+                    <a href="interfaceClientRIB.php">RIB</a>
                   </td>
                 </tr>
               </table>
@@ -101,17 +101,17 @@
               <table class="table">
                 <tr>
                   <td>
-                    <a href="interfaceClientHistoriqueVirement.html">Historique des virements</a>
+                    <a href="interfaceClientHistoriqueVirement.php">Historique des virements</a>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <a href="interfaceClientNouveauVirement.html">Nouveau virement</a>
+                    <a href="interfaceClientNouveauVirement.php">Nouveau virement</a>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <a href="interfaceClientGestionBeneficiaires.html">Gérer mes bénéficiaires</a>
+                    <a href="interfaceClientGestionBeneficiaires.php">Gérer mes bénéficiaires</a>
                   </td>
                 </tr>
               </table>
@@ -130,12 +130,12 @@
               <table class="table">
                 <tr>
                   <td>
-                    <a href="interfaceClientNouveauCompte.html">Ouverture d'un nouveau compte</a>
+                    <a href="interfaceClientNouveauCompte.php">Ouverture d'un nouveau compte</a>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <a href="interfaceClientCommandeChequier.html">Commande de nouveau chéquier</a>
+                    <a href="interfaceClientCommandeChequier.php">Commande de nouveau chéquier</a>
                   </td>
                 </tr>
               </table>
@@ -182,7 +182,7 @@
           <label for="motifVirement">Motif du virement </label>
           <input type="text" class="form-control" id="motifVirement">
         </div>
-        <a href="interfaceClientSyntheseCompte.html"><button type="button" class="btn btn-info">Annuler</button></a>
+        <a href="interfaceClientSyntheseCompte.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Envoyer virement</button>
       </form>
       </div>

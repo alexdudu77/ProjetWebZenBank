@@ -40,7 +40,7 @@
           <label for="titre">Identifiant *</label>
           <input type="text" name="identifiantClient" id="identifiantClient" placeholder="Saisissez votre identifiant" size="30">
         </div>
-        <a href="index.html"><button type="button" class="btn btn-info">Annuler</button></a>
+        <a href="index.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">R&eacute;initialiser mon mot de passe</button>
       </form>
       </div>
