@@ -44,7 +44,7 @@
                 <div class="form-group">
                   <label for="pwd">Password:</label>
                   <input type="password" class="form-control" id="passClient" placeholder="Saisissez votre mot de passe"><span class="glyphicon glyphicon-keys"></span>
-                  <a href="interfaceOubliMDP.html">Mot de passe oubli&eacute;?</a>
+                  <a href="interfaceOubliMDP.php">Mot de passe oubli&eacute;?</a>
                 </div>
               </div>
               <div class="modal-footer">
@@ -74,7 +74,7 @@
         <img src="images/zen-meditation-relaxation.jpg" alt="Devenir client">
         <div class="carousel-caption">
           <h3>Soyez Zen, on s'occupe de tout</h3>
-          <a href="interfaceNouveauClient.html" class="btn btn-info">Devenir client <span class="glyphicon glyphicon-chevron-right"></span></a>
+          <a href="interfaceNouveauClient.php" class="btn btn-info">Devenir client <span class="glyphicon glyphicon-chevron-right"></span></a>
         </div>      
       </div>
 
