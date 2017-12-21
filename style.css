@@ -1,0 +1,240 @@
+@font-face
+{ /* Définition d'une nouvelle police */
+    font-family: 'banquecy';
+    src: url('banquecy.eot');
+    src: url('banquecy.eot?#iefix') format('embedded-opentype'),
+         url('banquecy.woff') format('woff'),
+         url('banquecy.ttf') format('truetype'),
+         url('banquecy.svg#LearningCurveProRegular') format('svg');
+}
+
+#conteneur_profil
+{
+    display: flex;
+     justify-content: space-around;
+}
+
+body
+{
+    color:white;
+    background-color:white;
+    background-image:url(Banquecy.jpg);
+    background-size: cover;
+    background-attachment:fixed;
+    background-position:center center;
+}
+
+a /* Liens par défaut (non survolés) */
+{
+   text-decoration: none;
+   color: white;
+}
+
+a:hover /* Apparence au survol des liens */
+{
+   text-decoration: underline;
+   color: grey;
+}
+
+h1, h2
+{
+    text-align: left;
+}
+
+h1 
+{
+    font-size: 3em;
+}
+
+*
+{
+    font-family: "banquecy";
+    font-weight: 500;
+}
+
+a.button {
+    padding:6px;
+    font:bold 13px Arial;
+    background:#f5f5f5;
+    color:black;
+    border-radius:2px;
+    width:100px;
+    border:1px solid #ccc;
+    box-shadow:1px 1px 3px #999;
+}
+a:hover.button
+{
+    color:#0066CC;
+}
+
+#sous_menu
+{
+    list-style-type:none; /* On enlève la puce */ 
+    margin: 0; /* On retire les marges intérieures et extérieures */
+    padding:0; 
+    width:  15%;  /* J'ai mis une largeur pour ne pas prendre toute la largeur de l'écran */
+    border : solid 1px #dcdcd5;  /* On applique des bordures à la balise ul */
+    border-bottom: none; /* …et on retire celle du bas */
+    background: rgba(99, 99, 99, 0.7) ;
+    text-align: left;
+    font-size: 110%;
+}
+
+#sous_menu li
+{
+    margin: 0; /* On retire les marges intérieures et extérieures */
+    padding: 0.3em; 
+    border-bottom: 1px solid #dcdcd5;  /* Ici, on affiche une bordure uniquement en bas */
+}
+
+#sous_menu a
+{
+    text-decoration:none;  /* On enlève le soulignement */
+    color:white; 
+    padding-left:0.9%;  /* Une marge intérieure gauche juste pour l'esthétique */
+}
+
+#sous_menu a:hover
+{
+    background-color:#e9eefb; 
+    color:#000000; 
+}
+
+#faire_virement
+{
+list-style-type:none;
+}
+
+#faire_virement li{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.menu_information
+{
+    width: 20%;
+    text-align: justify;
+}
+
+table-condensed
+{
+    width: auto !important;
+}
+    
+container
+{
+    position: relative;
+}
+
+.tableau
+{
+    font-size: inherit;
+    font-size: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: black;
+    background: rgba(255, 255, 255, 15);
+}
+
+.tableau td:hover, .tableau td:active, .tableau td:focus, .tableau a
+{
+    background: rgba(250, 250, 250, 15) ;
+    color:black;
+}
+
+.tableau td:hover + a:hover, .tableau td:active a, .tableau td:focus a, .tableau td+a, .tableau td a, .tableau a, .tableau th td a
+{
+	background: rgba(250, 250, 250, 15) ;
+	color:black;
+}
+td, th, tr /* Mettre une bordure sur les td, les th */
+{
+    border: 1px solid grey;
+    padding: 0.5em; 
+}
+
+.tableau th, tr
+{
+    font-weight:bolder;
+}
+
+.lien_tableau
+{
+    color:black;
+}
+
+.lien_bouton
+{
+color:black;
+}
+
+.nav
+{
+    list-style-type:none; /* On enlève la puce */ 
+    margin: 0; /* On retire les marges intérieures et extérieures */
+    padding:0.2%; 
+    width:  20%;  /* J'ai mis une largeur pour ne pas prendre toute la largeur de l'écran */
+    border : solid 1px #dcdcd5;  /* On applique des bordures à la balise ul */
+    background: rgba(99, 99, 99, 0.7) ;
+    text-align: left;
+    font-size: 90%;
+    border-bottom: 1px solid #dcdcd5;
+}
+
+
+
+.nav a
+{
+    text-decoration:none;  /* On enlève le soulignement */
+    color:white; 
+    padding-left:0.9%;  /* Une marge intérieure gauche juste pour l'esthétique */
+}
+
+.nav a:hover
+{
+    background-color:#e9eefb; 
+    color:#000000; 
+}
+
+
+
+
+.modifier a
+{
+  
+font-size: 60%;
+}
+
+/* Footer */
+button 
+{
+color:black;
+}
+
+footer
+{
+    font-size: 70%;
+    padding-top: 100px;
+    margin: 0,75em 0;
+}
+
+footer p, footer ul
+{
+    font-size: 70%;
+}
+
+#contact
+{
+    width: 28%;
+}
+
+#copyright
+{
+    width: 35%;
+}
+
+form label
+{
+    display: inline-block;
+    width: 200px;
+}
