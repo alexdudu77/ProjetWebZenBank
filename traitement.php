@@ -3,7 +3,8 @@
       $c = new mysqli("localhost", "root", "root", "zenbanque", 3306);
       if($c->connect_errno){
               //si erreur de connection
-          return "Pb BDD";
+           exit('Erreur : Problème de connexion à la BDD');
+           //return "Pb BDD";
       }
       $res = $c->query($sql);
       $c->close();
@@ -20,19 +21,19 @@
     function connexionMonCompte($email, $mdp){
       $sql = "SELECT id, nom, prenom FROM individus WHERE email = '".$email."' and mot_de_passe = '".$mdp."'";
       $requete = executeQuery($sql);
-      //$count = mysqli_num_rows($requete);
-      //if ($count==1){
-      $result = $requete->fetch_row();
-      initialiseVariablesSession($result[0], $result[1], $result[2]);
-      //}
-      return $result[0] != null;
+      $count = mysqli_num_rows($requete);
+      if ($count==1){
+        $result = $requete->fetch_row();
+        initialiseVariablesSession($result[0], $result[1], $result[2]);
+      }
+      return $count == 1;
     }
 
     function generationMDP($email){
-      $sql = "select genere_mot_de_passe((select id from individus where email ='".$email."')) as mdp";
+      $sql = "select generation_mot_de_passe((select id from individus where email ='".$email."')) as mdp";
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);
-      $result = $requete->file_fletch();
+      $result = $requete->fetch_row();
       $_SESSION['mdp'] = $result[0];
       return $count == 1;
     }
@@ -50,7 +51,9 @@
       return $count == 1;
     }
 
-    function nouveauCompte($id, $libelle_compte, $type_compte){
+    function nouveauCompte($type_compte){
+      $id = $_SESSION['id'] ;
+      $libelle_compte = "";
       $sql = "select creation_compte(".$id.",'".$libelle_compte."','".$type_compte."')";
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);
@@ -68,4 +71,6 @@
         $_SESSION['prenom'] = $prenom;
       }
     }
+
+
 ?>

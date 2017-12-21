@@ -1,4 +1,21 @@
-<!DOCTYPE html>
+<?php
+
+  if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+  }
+
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      require "traitement.php";
+      $type_compte = $_POST['typeCompte'];
+     if (nouveauCompte($type_compte)) {
+          header('Location:interfaceClientSyntheseCompte.php');
+      }
+      else{
+        $err = "Erreur lors de la création du compte";
+      }
+  }
+ ?>
+
 <html lang="fr">
 <head>
   <title>Ouverture nouveau compte</title>
@@ -17,7 +34,7 @@
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="index.php">Zen Bank</a>
     </div>
@@ -27,7 +44,7 @@
         <li class="active"><a href="interfaceClientSyntheseCompte.php">Mon espace client</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><h2 id="messageBienvenue">Bonjour client</h2></li>
+        <li><h2 id="messageBienvenue">Bonjour <?php echo $_SESSION['nom'] . ' ' . $_SESSION['prenom'];  ?></h2></li>
         <li><a href="index.php"><button type="button" class="btn btn-danger">
           Se déconnecter <span class="glyphicon glyphicon-log-out"></span>
         </button></a></li>
@@ -35,8 +52,8 @@
     </div>
   </div>
 </nav>
-  
-<div class="container-fluid text-center">    
+
+<div class="container-fluid text-center">
   <div class="row content">
     <!-- Menu latéral accordéon -->
     <div class="col-md-3 sidenav">
@@ -148,13 +165,13 @@
       <br>
       <div class="col-md-5">
         <!-- Menu choix du type de compte -->
-      <form method="post" action="A MODIFIER.PHP">
+      <form method="post" action="">
         <div class="form-group">
           <label for="nouveauCompte">Quel type de compte souhaitez-vous ouvrir?</label>
           <br>
           <select name="typeCompte" id="typeCompte">
-            <option value="compteCourant">Compte courant</option>
-            <option value="compteEpargne">Compte &eacute;pargne</option>
+            <option value="C">Compte courant</option>
+            <option value="E">Compte &eacute;pargne</option>
           </select>
         </div>
         <a href="interfaceClientSyntheseCompte.php"><button type="button" class="btn btn-info">Annuler</button></a>
@@ -173,4 +190,3 @@
 
 </body>
 </html>
-
