@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+  // On démarre la session
+  if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+  }
+  require "traitement.php"
+?>
+
 <html lang="fr">
 <head>
   <title>Template client interface</title>
@@ -24,7 +31,7 @@
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="index.php">Zen Bank</a>
     </div>
@@ -34,7 +41,7 @@
         <li class="active"><a href="interfaceClientSyntheseCompte.php">Mon espace client</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><h2 id="messageBienvenue">Bonjour client</h2></li>
+        <li><h2 id="messageBienvenue">Bonjour <?php echo $_SESSION['nom'] . ' ' . $_SESSION['prenom'];  ?></h2></li>
         <li><a href="index.php"><button type="button" class="btn btn-danger">
           Se déconnecter <span class="glyphicon glyphicon-log-out"></span>
         </button></a></li>
@@ -42,8 +49,8 @@
     </div>
   </div>
 </nav>
-  
-<div class="container-fluid text-center">    
+
+<div class="container-fluid text-center">
   <div class="row content">
     <!-- Menu latéral accordéon -->
     <div class="col-md-3 sidenav">
@@ -151,7 +158,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-9 text-left"> 
+    <div class="col-md-9 text-left">
       <div id="syntheseComptes">
         <!-- Charger la liste des comptes clients -->
         <h2>Synth&egrave;se des comptes</h2>
@@ -180,4 +187,3 @@
 
 </body>
 </html>
-

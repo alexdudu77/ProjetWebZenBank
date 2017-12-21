@@ -7,7 +7,7 @@ use zenbanque;
 /* tables de principales */
 create table individus(id int primary key auto_increment, 
                     civilite char(3) not null, /* MME / M */
-					nom_usage varchar(255) not null,
+					nom varchar(255) not null,
 					nom_jeune_fille varchar(255),					
 					prenom varchar(255) not null, 
 					date_naissance date, 
@@ -184,7 +184,7 @@ begin
 	declare var_individu_id int;
 
     /* création de l'individu */
-    insert into individus(civilite, nom_usage, nom_jeune_fille, prenom, date_naissance, email, portable, fixe, adresse, code_postal, ville)
+    insert into individus(civilite, nom, nom_jeune_fille, prenom, date_naissance, email, portable, fixe, adresse, code_postal, ville)
         values (in_civilite, in_nom_usage, in_nom_jeune_fille, in_prenom, in_date_naissance, in_email, in_portable, in_fixe, in_adresse, in_code_postal, in_ville);
         
     select id into var_individu_id from individus where email = in_email;
