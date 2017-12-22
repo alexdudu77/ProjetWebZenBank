@@ -1,5 +1,7 @@
 <?php
-
+  if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+  }
 
    if($_SERVER["REQUEST_METHOD"] == "POST") {
       // username and password sent from form
@@ -10,7 +12,7 @@
 
       if (connexionMonCompte($myusername, $mypassword)) {
          $_SESSION['login_user'] = $myusername;
-         $p = "location: interfaceClientSyntheseCompte.php?nom=".$myusername."";
+         $p = "location: interfaceClientSyntheseCompte.php?id=".$_SESSION['id']."";
          header($p);
       } else {
          $error = "Login ou mot de passe invalide";

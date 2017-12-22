@@ -3,6 +3,7 @@
   if (session_status() != PHP_SESSION_ACTIVE) {
     session_start();
   }
+
   require "traitement.php"
 ?>
 
@@ -159,22 +160,30 @@
       </div>
     </div>
     <div class="col-md-9 text-left">
-      <div id="syntheseComptes">
-        <!-- Charger la liste des comptes clients -->
-        <h2>Synth&egrave;se des comptes</h2>
-        <div class="compte">
-          <a href="">Compte 1</a>
-          <span>xxx €</span>
-        </div>
-        <div class="compte">
-          <a href="">Compte 2</a>
-          <span>xxx €</span>
-        </div>
+      <!-- Charger la liste des comptes clients -->
+       <div id="syntheseComptes">
+          <h2>Synth&egrave;se des comptes</h2>
+          <?php
+            require "interfaceClientSyntheseCompteTraitement.php";
+            afficherComptesClient($_SESSION['id']);
+          ?>
+
         <div id="totalSolde">
           <h3>Total Solde</h3>
           <span>xxx €</span>
         </div>
       </div>
+
+  <!--    <table id="ComptesClient" class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+          <tr>
+            <th>Libell&eacute;</th>
+            <th>Num&eacute;ro de compte</th>
+            <th>Solde</th>
+          </tr>
+
+
+        </table>-->
     </div>
   </div>
 </div>

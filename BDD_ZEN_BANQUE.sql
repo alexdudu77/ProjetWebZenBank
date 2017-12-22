@@ -21,17 +21,18 @@ create table individus(id int primary key auto_increment,
 					) engine=InnoDB default charset=UTF8;
 
 create table agences(id int primary key auto_increment,
+					libelle varchar(50),
                     email varchar(255),
 					departement int(2),
 					code_agence int(5),
 					code_banque int(5)
 					)engine=InnoDB default charset=UTF8;
 		
-insert into agences(email, departement, code_agence, code_banque) values 
-	('zenbanque94@gmail.com', 94, 94000, 17515), 
-	('zenbanque75@gmail.com', 75, 75000, 17515),
-    ('zenbanque93@gmail.com', 93, 93000, 17515),
-    ('zenbanque91@gmail.com', 91, 91000, 17515);
+insert into agences(libelle, email, departement, code_agence, code_banque) values 
+	('Zen 94', 'zenbanque94@gmail.com', 94, 94000, 17515), 
+	('Zen 75', 'zenbanque75@gmail.com', 75, 75000, 17515),
+    ('Zen 93', 'zenbanque93@gmail.com', 93, 93000, 17515),
+    ('Zen 91', 'zenbanque91@gmail.com', 91, 91000, 17515);
 					
 create table comptes(numero_compte varchar(11) primary key,
 					libelle varchar(255),                   
@@ -115,7 +116,7 @@ begin
         si le code postal n'existe pas dans la table des agences, on créé celle ci
     */
     if var_agence_id is null then
-        insert into agences(email, departement, code_agence, code_banque) values (concat('zenbanque', var_departement, '@gmail.com'), var_departement, concat(var_departement, '000'), 17515);
+        insert into agences(libelle, email, departement, code_agence, code_banque) values (concat('Zen ', var_departement), concat('zenbanque', var_departement, '@gmail.com'), var_departement, concat(var_departement, '000'), 17515);
         select id into var_agence_id from agences where departement = var_departement;
     end if;    
     
@@ -218,19 +219,20 @@ select creation_individu('M', 'ALI', '', 'Baba', '1971-06-28', 'ababa@hotmail.fr
 
 create or replace view v_listes_comptes
 as select i.id as individu_id, 
-    numero_compte, 
-    code_agence, 
-    code_banque, 
+    c.numero_compte, 
+    a.code_agence, 
+    a.code_banque, 
     cle_rib, 
-    case when type_compte = 'E' then 'Compte épargne' else 'Compte courant' end as type_compte
+    case when type_compte = 'E' then 'Compte épargne' else 'Compte courant' end as type_compte,
+	a.libelle as libelle_agence
 from individus i
 join comptes c on c.individu_id = i.id
 join agences a on a.id = c.agence_id|
 
 create or replace view v_soldes_comptes
-as select lc.*, sum(montant) as solde
+as select lc.*,  coalesce(sum(montant), 0) as solde
 from v_listes_comptes lc
-join mouvements m on m.numero_compte_id = lc.numero_compte
+left join mouvements m on m.numero_compte_id = lc.numero_compte
 group by individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte|
 
 /*create or replace view v_mouvements_comptes
