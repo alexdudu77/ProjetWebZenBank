@@ -1,4 +1,8 @@
 <?php
+  if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+  }
+
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
       require "traitement.php";
       $email = $_POST['identifiantClient'];
@@ -29,6 +33,9 @@
     h3{
       text-align: center;
     }
+    #error{
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -53,7 +60,7 @@
       <br>
       <div class="col-md-6">
       <form method="post" action="">
-        <div href="message">
+        <div id="error">
             <?php
               if (isset($err)){
                 echo $err;
@@ -64,7 +71,7 @@
           <label for="titre">Identifiant *</label>
           <input type="email" name="identifiantClient" id="identifiantClient" placeholder="Saisissez votre identifiant" size="30" required>
         </div>
-        <a href="index.html"><button type="button" class="btn btn-info">Annuler</button></a>
+        <a href="index.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">R&eacute;initialiser mon mot de passe</button>
       </form>
       </div>

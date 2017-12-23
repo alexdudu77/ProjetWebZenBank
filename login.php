@@ -42,22 +42,26 @@
               <form method="post" action="">
                 <div style = "font-size:15px; color:#cc0000; margin-top:10px">
                   <?php
-                    if (isset($error)) { echo $error; }
+                    if (isset($error)) {
+                        echo $error;
+                    }elseif (isset($_SESSION['mdp'])){
+                      echo "Mot de passe : ".$_SESSION['mdp'];
+                    }
                   ?>
                 </div>
               <div class="modal-body">
                 <div class="form-group">
-                  <label for="idClient">Identifiant client:</label>
-                  <input type="text" class="form-control" name="idClient" placeholder="Saisissez votre identifiant">
+                  <label for="idClient">Identifiant client :</label>
+                  <input type="email" class="form-control" name="idClient" placeholder="Saisissez votre identifiant" required>
                 </div>
                 <div class="form-group">
-                  <label for="pwd">Password:</label>
-                  <input type="password" class="form-control" name="passClient" placeholder="Saisissez votre mot de passe"><span class="glyphicon glyphicon-keys"></span>
+                  <label for="pwd">Password :</label>
+                  <input type="password" class="form-control" name="passClient" placeholder="Saisissez votre mot de passe" required><span class="glyphicon glyphicon-keys"></span>
                   <a href="interfaceOubliMDP.php">Mot de passe oubli&eacute;?</a>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <a href="index.php"><button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button></a>
                 <button type="submit" class="btn btn-danger" id="btnConnexion"><label>Se connecter</label></button>
               </div>
               </form>
