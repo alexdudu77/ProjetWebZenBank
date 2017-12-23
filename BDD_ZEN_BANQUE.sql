@@ -57,7 +57,7 @@ create table beneficiaires(id int primary key auto_increment,
 create table mouvements(id int primary key auto_increment,
 					libelle varchar(255),
                     sens char(1), /* D/C */
-                    montant numeric,
+                    montant decimal(10,2),
                     date_mouvement date,
                     type_mouvement varchar(10), /* CB/V/D/R */
 					numero_compte_id varchar(11),                    
@@ -87,6 +87,8 @@ end |
 delimiter;
 */
 delimiter |
+
+/* CREATION DES FONCTIONS */
 drop function if exists creation_compte|
 create function creation_compte(
     in_individu_id integer, 
@@ -213,10 +215,14 @@ select creation_individu('MME', 'CABOT', 'CABOT', 'Sandra', '1978-05-03', 'scabo
 select creation_individu('M', 'DUVERT', '', 'Alexandre', '1971-06-28', 'aduvert@noos.fr', null, null, '5 passage national', 75013, 'Paris 13')|
 select creation_individu('M', 'MARTINEZ', '', 'Arnaud', '1974-09-12', 'amartinez@gmail.com', null, null, 'avenue Albert Perrault', 94370, 'Sucy en Brie')|
 select creation_individu('M', 'ALI', '', 'Baba', '1971-06-28', 'ababa@hotmail.fr', null, null, '5 passage national', 92014, 'Nanterre')|
+/* INITIALISATION DES MOUVEMENTS*/
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Salaire', 'C', '3256.25', '2017-12-28', 'V', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('EDF', 'D', '95.60', '2017-12-29', 'P', '11111111111')|
+ /* INITIALISATION DES BENEFICIAIRES*/
+insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 1', 1, 2, '11111111112')|
+insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 2', 1, 3, '11111111113')|
 
-/* INITIALISATION DES MOUVEMENTS
-*/
-
+/* CREATION DES VUES */
 create or replace view v_listes_comptes
 as select i.id as individu_id, 
     c.numero_compte, 
@@ -235,9 +241,16 @@ from v_listes_comptes lc
 left join mouvements m on m.numero_compte_id = lc.numero_compte
 group by individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte|
 
-/*create or replace view v_mouvements_comptes
-as select lc.*, lc.*
+create or replace view v_mouvements_comptes
+as select lc.individu_id, m.*
 from v_listes_comptes lc
 join mouvements m on m.numero_compte_id = lc.numero_compte
-group by individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte|*/
+order by m.numero_compte_id, m.date_mouvement desc|
+
+create or replace view v_beneficiaires as
+	select b.id, b.libelle, i2.nom, i2.prenom
+	from beneficiaires b
+	join individus i on i.id = b.individu_source_id
+	join individus i2 on i2.id = b.individu_beneficiaire_id
+    order by b.libelle, i2.nom, i2.prenom|
 delimiter ;
