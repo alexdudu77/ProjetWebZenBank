@@ -2,7 +2,7 @@
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
       require "traitement.php";
       $email = $_POST['identifiantClient'];
-      if (!testExistanceClient($email)){
+      if (testExistanceClient($email)){
         if (generationMDP($email)) {
           header('Location:login.php');
         }
