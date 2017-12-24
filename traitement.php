@@ -40,24 +40,37 @@
 
     function nouveauClient($titre, $nom, $prenom, $datenaissance, $email, $portable, $fixe, $adresse, $cp, $ville){
       $sql = "select creation_individu('".$titre."', '".$nom."', '', '".$prenom."', '".$datenaissance."', '".$email."', '".$portable."', '".$fixe."', '".$adresse."', ".$cp.", '".$ville."') as id";
-      $_SESSION['nom'] = $nom;
-      $_SESSION['prenom'] = $prenom;
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);
       if ($count==1){
         $result = $requete->fetch_row();
-        initialiseVariablesSession($result[0], null, null);
+        initialiseVariablesSession($result[0], $nom, $prenom);
+        recuperationMDP();
       }
       return $count == 1;
     }
 
     function nouveauCompte($type_compte){
-      $id = $_SESSION['id'] ;
+      $id = $_SESSION['id'];
       $libelle_compte = "";
       $sql = "select creation_compte(".$id.",'".$libelle_compte."','".$type_compte."')";
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);
       return $count == 1;
+    }
+
+    function recuperationMDP(){
+      $sql = "select mot_de_passe from individus where id =".$_SESSION['id'];
+      $requete = executeQuery($sql);
+      $result = $requete->fetch_row();
+      $_SESSION['mdp'] = $result[0];
+    }
+
+    function commandeChequier($id_compte, $nbr){
+      $sql = "select commande_chequiers(".$_SESSION['id'].", ".$id_compte."," .$nbr.")";
+      $requete = executeQuery($sql);
+      $result = $requete->fetch_row();
+      return $result[0];
     }
 
     function initialiseVariablesSession($id, $nom, $prenom){

@@ -70,7 +70,15 @@ create table historisation(id int primary key auto_increment,
                     modification varchar(255),
                     foreign key (individu_id) references individus(id)
 					)engine=InnoDB default charset=UTF8;
-
+					
+create table commandes_chequiers(id int primary key auto_increment,
+                    individu_id int,
+					numero_compte_id varchar(11),
+					date_commande date,
+                    nombre int(1),
+                    foreign key (individu_id) references individus(id),
+					foreign key (numero_compte_id) references comptes(numero_compte)
+					)engine=InnoDB default charset=UTF8;
 /*
 delimiter |
 create or replace trigger historisation on individus for each row
@@ -208,6 +216,43 @@ begin
     call historisation(var_individu_id, 'CREATION');
     
     return var_individu_id;
+end|
+
+drop function if exists commande_chequiers|
+create function commande_chequiers(
+    in_individu_id int,
+	in_num_compte varchar(11),
+	in_nombre int
+)
+returns varchar(255)
+begin
+	declare nbr_chequier int;
+	
+	select count(nombre) into nbr_chequier 
+	from commandes_chequiers 
+	where individu_id = in_individu_id
+	  and numero_compte_id = in_num_compte
+	  and datediff(CURDATE(), date_commande) >= 30;
+	
+	if (nbr_chequier > 2) then
+		return "Nombre de chéquier maximum atteind";	
+	elseif (in_nombre + nbr_chequier > 2) then
+		return "Le nombre de chéquier maximum commandé est dépassé.";
+	else
+        /* création de la commande */
+        insert into commandes_chequiers(individu_id, numero_compte_id, date_commande, nombre) values (in_individu_id, in_num_compte, CURDATE(), in_nombre);
+
+        /*On récupère l'ID de la table poru historisation*/
+        BEGIN
+            declare id int;
+            select max(id) into id from commandes_chequiers;
+
+            /* historisation */
+            call historisation(id, concat('COMMANDE DE CHEQUIER : ', in_nombre));
+        end;
+
+        return "";
+    end if;
 end|
 
 /* INITIALISATION DES INDIVIDUS*/

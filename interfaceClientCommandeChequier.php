@@ -1,4 +1,19 @@
-<!DOCTYPE html>
+<?php
+  if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+  }
+
+  require "traitement.php";
+
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {    
+    $err = commandeChequier($_POST['listeCompte'], $_POST['nombreChequier']);
+    if ($err == "") {
+        $err = "Commande bien effectuée";
+      }
+    }
+
+ ?>
+
 <html lang="fr">
 <head>
   <title>Commande de ch&eacute;quier</title>
@@ -17,7 +32,7 @@
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="index.php">Zen Bank</a>
     </div>
@@ -35,8 +50,8 @@
     </div>
   </div>
 </nav>
-  
-<div class="container-fluid text-center">    
+
+<div class="container-fluid text-center">
   <div class="row content">
     <!-- Menu latéral accordéon -->
     <div class="col-md-3 sidenav">
@@ -146,26 +161,26 @@
     </div>
     <div class="col-md-9 text-left">
       <!-- Formulaire de commande chéquier -->
-      <form method="post" action="A MODIFIER.PHP">
+      <form method="post" action="">
         <div class="form-group">
           <label for="compteChequier">S&eacute;lectionnez le compte rattach&eacute; au ch&eacute;quier</label>
           <br>
           <!-- Charger la liste des comptes courants -->
-          <select name="listeCompte" id="listeCompte">
-            <option value="compte1">compte1</option>
-            <option value="compte2">compte2</option>
-          </select>
+            <?php
+              require "AfficherListeComptesTraitement.php";
+              afficherListeComptes($_SESSION['id']);
+            ?>
         </div>
         <div class="form-group">
           <label for="nombreChequier">Nombre de ch&eacute;quier </label>
           <br>
-          <input type="number" id="nombreChequier" min="0" max="2" size="3">
+          <input type="number" id="nombreChequier" name="nombreChequier" min="0" max="2" size="3">
         </div>
         <br>
         <div class="form-group">
           <label for="formatChequier">Format de ch&eacute;quier d&eacute;sir&eacute;</label>
           <div class="input-group">
-            <input type="radio" id="chequierSimple" name="formatChequier">
+            <input type="radio" id="chequierSimple" name="formatChequier" checked>
             <label for="formatChequier">Format Simple </label>
           </div>
           <div class="input-group">
@@ -177,7 +192,7 @@
         <div class="form-group">
           <label for="lieuLivraisonChequier">Lieu o&ugrave; je souhaite &ecirc;tre livr&eacute;</label>
           <div class="input-group">
-            <input type="radio" id="monAgence" name="lieuLivraisonChequier">
+            <input type="radio" id="monAgence" name="lieuLivraisonChequier" checked>
             <label for="lieuLivraisonChequier">Mon agence </label>
           </div>
           <div class="input-group">
@@ -187,6 +202,10 @@
         </div>
         <a href="interfaceClientSyntheseCompte.html"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Valider commande</button>
+        </br>
+        <div>
+          <?php if (isset($err)) {echo $err;} ?>
+        </div>
       </form>
     </div>
   </div>
