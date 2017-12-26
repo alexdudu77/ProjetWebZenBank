@@ -11,9 +11,8 @@
 <body>
 
 <?php
-  include("interfaceClientEnTete.php")
+  include("interfaceClientEnTete.php");
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
-      require "traitement.php";
       $type_compte = $_POST['typeCompte'];
      if (nouveauCompte($type_compte)) {
           header('Location:interfaceClientSyntheseCompte.php');
