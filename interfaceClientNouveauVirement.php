@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="fr">
 <head>
   <title>Nouveau virement</title>
@@ -11,7 +10,17 @@
 </head>
 <body>
 
-<?php include("interfaceClientEnTete.php") ?>
+<?php
+  include("interfaceClientEnTete.php");
+  // Le code est ici car le start session et le require sont dans le php d'en tête ci dessus
+  require "interfaceClientNouveauVirementTraitement.php";
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $err = demandeVirement($_POST['listeCompte'], $_POST['listeBeneficiaire'], $_POST['montantVirement'], $_POST['dateVirement'], $_POST['motifVirement']);
+    if ($err == "") {
+        header("location:interfaceClientHistoriqueVirement.php?numerocompte=".$_POST['listeCompte']);
+    }
+  }
+?>
 
 <div class="container-fluid text-center">
   <div class="row content">
@@ -125,39 +134,41 @@
       <!-- Formulaire de nouveau virement -->
       <br>
       <div class="col-md-3">
-      <form method="post" action="A MODIFIER.PHP">
+      <form method="post" action="">
+        <div style="color:red">
+          <?php
+            if (isset($err)){
+              echo $err;
+            }
+          ?>
+        </br>
+        </div>
         <div class="form-group">
           <label for="compteADebiter">Compte &agrave; d&eacute;biter</label>
           <br>
           <!-- Charger la liste des comptes du client -->
-          <select name="listCompte" id="listeCompte">
-            <option value="compte1">compte1</option>
-            <option value="compte2">compte2</option>
-          </select>
+          <?php afficherListeMesComptes($_SESSION['id']); ?>
         </div>
         <div class="form-group">
           <!-- Charger la liste des bénéficiaires -->
           <label for="compteACrediter">B&eacute;n&eacute;ficiaire</label>
           <br>
-          <select name="listeBeneficiare" id="listeBeneficiare">
-            <option value="beneficiaire1">beneficiaire1</option>
-            <option value="beneficiaire2">beneficiaire2</option>
-          </select>
+          <?php afficherListeComptesBeneficiaires($_SESSION['id']); ?>
         </div>
         <div class="form-group">
           <label for="dateVirement">Date de virement </label>
-          <input type="date" class="form-control" id="dateVirement">
+          <input type="date" class="form-control" name="dateVirement" required>
         </div>
         <div class="form-group">
           <label for="montantVirement">Montant du virement </label>
           <div class="input-group">
-            <input type="number" class="form-control" aria-label="Montant en €" id="montantVirement" min="1">
+            <input type="number" class="form-control" aria-label="Montant en €" name="montantVirement" min="1" required>
             <span class="input-group-addon">€</span>
           </div>
         </div>
         <div class="form-group">
           <label for="motifVirement">Motif du virement </label>
-          <input type="text" class="form-control" id="motifVirement">
+          <input type="text" class="form-control" name="motifVirement" required>
         </div>
         <a href="interfaceClientSyntheseCompte.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Envoyer virement</button>

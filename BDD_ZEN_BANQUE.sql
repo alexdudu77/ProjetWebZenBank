@@ -255,6 +255,53 @@ begin
     end if;
 end|
 
+drop function if exists demande_virement|
+create function demande_virement(
+    in_num_compte_source varchar(11),
+	in_num_compte_dest varchar(11),
+	in_montant double,
+    in_date date,
+    in_motif varchar(255)
+)
+returns varchar(255)
+begin
+	declare virement_ko boolean;
+	
+	select (solde - in_montant) < -500 into virement_ko
+	from v_soldes_comptes 
+	where numero_compte = in_num_compte_source;
+	
+	if (virement_ko) then
+		return "Le solde de votre compte n'est pas suffisant pour effectuer ce virement";	
+	else
+        begin
+            declare var_beneficiaire_nom varchar(255);
+            declare var_source_nom varchar(255);
+            declare id int;
+            
+            select concat(nom, ' ' , prenom) into var_beneficiaire_nom
+            from individus i
+            join comptes c on c.individu_id = i.id
+            where numero_compte = in_num_compte_dest;
+ 
+            select id, concat(nom, ' ' , prenom) into id, var_source_nom
+            from individus i
+            join comptes c on c.individu_id = i.id
+            where numero_compte = in_num_compte_source;
+            
+            /*débit du compte source */
+            insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values (in_motif, 'D', in_montant, in_date, 'V', in_num_compte_source);
+            /* crédit du compte bénéficiaire */
+            insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values (in_motif, 'C', in_montant, in_date, 'V', in_num_compte_dest);
+
+            /* historisation */
+            call historisation(id, concat('Virement de ', in_montant, ' - Motif ', in_motif));
+        end;
+        
+        return "";
+    end if;
+end|
+
 /* INITIALISATION DES INDIVIDUS*/
 select creation_individu('MME', 'CABOT', 'CABOT', 'Sandra', '1978-05-03', 'scabot@hotmail.com', null, null, 'avenue du général de gaulle', 94160, 'SAINT MANDE')|
 select creation_individu('M', 'DUVERT', '', 'Alexandre', '1971-06-28', 'aduvert@noos.fr', null, null, '5 passage national', 75013, 'Paris 13')|
@@ -273,34 +320,49 @@ insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id,
 insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 2', 1, 3, '11111111113')|
 
 /* CREATION DES VUES */
-create or replace view v_listes_comptes
-as select i.id as individu_id,
-    c.numero_compte,
-    a.code_agence,
-    a.code_banque,
-    cle_rib,
-    case when type_compte = 'E' then 'Compte épargne' else 'Compte courant' end as type_compte,
-	a.libelle as libelle_agence
-from individus i
-join comptes c on c.individu_id = i.id
-join agences a on a.id = c.agence_id|
+create or replace view v_listes_comptes as 
+    select i.id as individu_id,
+        c.numero_compte,
+        a.code_agence,
+        a.code_banque,
+        c.cle_rib, 
+        c.type_compte,
+        case when type_compte = 'E' then 'Compte épargne' else 'Compte courant' end as libelle_type_compte,
+        a.libelle as libelle_agence
+    from individus i
+    join comptes c on c.individu_id = i.id
+    join agences a on a.id = c.agence_id|
 
-create or replace view v_soldes_comptes
-as select lc.*,  coalesce(sum(montant), 0) as solde
-from v_listes_comptes lc
-left join mouvements m on m.numero_compte_id = lc.numero_compte
-group by individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte|
+create or replace view v_soldes_comptes as
+    select individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte, libelle_type_compte, libelle_agence, round(sum(montant),2) as solde 
+    from 
+        (select lc.*,  case when m.sens = 'C' then coalesce(montant, 0) else coalesce(concat('-', montant), 0) end as montant
+        from v_listes_comptes lc
+        left join mouvements m on m.numero_compte_id = lc.numero_compte
+        ) q
+    group by individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte|
 
 create or replace view v_mouvements_comptes
-as select lc.individu_id, m.*
-from v_listes_comptes lc
-join mouvements m on m.numero_compte_id = lc.numero_compte
-order by m.numero_compte_id, m.date_mouvement desc|
+    as select lc.individu_id, m.*
+    from v_listes_comptes lc
+    join mouvements m on m.numero_compte_id = lc.numero_compte
+    order by m.numero_compte_id, m.date_mouvement desc|
 
 create or replace view v_beneficiaires as
-	select b.id, b.libelle, i2.nom, i2.prenom
+	select b.individu_beneficiaire_id, i2.nom, i2.prenom, b.individu_source_id, b.libelle
 	from beneficiaires b
 	join individus i on i.id = b.individu_source_id
 	join individus i2 on i2.id = b.individu_beneficiaire_id
     order by b.libelle, i2.nom, i2.prenom|
+    
+create or replace view v_comptes_beneficiaires as
+	select b.individu_beneficiaire_id, b.nom, b.prenom, b.individu_source_id, b.libelle, c.numero_compte
+	from v_beneficiaires b
+    join comptes c on c.individu_id = b.individu_beneficiaire_id
+    UNION ALL
+    select i.id, i.nom, i.prenom, i.id, concat('Mon compte ', c2.numero_compte), c2.numero_compte
+    from individus i
+    join comptes c2 on c2.individu_id = i.id
+    where c2.type_compte = 'E'
+    order by libelle, nom, prenom|
 delimiter ;

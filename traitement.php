@@ -73,6 +73,13 @@
       return $result[0];
     }
 
+    function demandeVirement($id_compte_source, $id_compte_dest, $montant, $date, $motif){
+      $sql = "select demande_virement('".$id_compte_source."', '".$id_compte_dest."',".$montant.", '".$date."', '".$motif."') as erreur";
+      $requete = executeQuery($sql);
+      $result = $requete->fetch_row();
+      return $result[0];
+    }
+
     function initialiseVariablesSession($id, $nom, $prenom){
       if($id != null){
         $_SESSION['id'] = $id;
