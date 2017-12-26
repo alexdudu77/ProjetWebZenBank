@@ -140,7 +140,6 @@
         </p>
         <input type="submit" value="Afficher" title="Valider pour afficher l'historique" />
       </form>
-      <br>
 
       <?php
       //Affichage du numéro de compte consulté
