@@ -209,7 +209,7 @@ begin
     begin
         declare var_numero_compte varchar(11);
         select creation_compte(var_individu_id, 'Compte courant', 'C') into var_numero_compte;
-        insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Offre de bienvennue', 'C', 100.00, CURDATE(), 'V', var_numero_compte);
+        insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Offre de bienvenue', 'C', 100.00, CURDATE(), 'V', var_numero_compte);
     end;
 
     /* historisation */
@@ -266,29 +266,29 @@ create function demande_virement(
 returns varchar(255)
 begin
 	declare virement_ko boolean;
-	
+
 	select (solde - in_montant) < -500 into virement_ko
-	from v_soldes_comptes 
+	from v_soldes_comptes
 	where numero_compte = in_num_compte_source;
-	
+
 	if (virement_ko) then
-		return "Le solde de votre compte n'est pas suffisant pour effectuer ce virement";	
+		return "Le solde de votre compte n'est pas suffisant pour effectuer ce virement";
 	else
         begin
             declare var_beneficiaire_nom varchar(255);
             declare var_source_nom varchar(255);
             declare id int;
-            
+
             select concat(nom, ' ' , prenom) into var_beneficiaire_nom
             from individus i
             join comptes c on c.individu_id = i.id
             where numero_compte = in_num_compte_dest;
- 
+
             select id, concat(nom, ' ' , prenom) into id, var_source_nom
             from individus i
             join comptes c on c.individu_id = i.id
             where numero_compte = in_num_compte_source;
-            
+
             /*débit du compte source */
             insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values (in_motif, 'D', in_montant, in_date, 'V', in_num_compte_source);
             /* crédit du compte bénéficiaire */
@@ -297,7 +297,7 @@ begin
             /* historisation */
             call historisation(id, concat('Virement de ', in_montant, ' - Motif ', in_motif));
         end;
-        
+
         return "";
     end if;
 end|
@@ -319,13 +319,19 @@ insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, n
 insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 1', 1, 2, '11111111112')|
 insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 2', 1, 3, '11111111113')|
 
+/* Création de nouveauCompte Epargne + Ajout de lignes */
+select creation_compte(1,'Compte Epargne','E')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai6', 'C', '120', '2017-12-22', 'P', '11111111115')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai7', 'D', '300', '2017-12-29', 'P', '11111111115')|
+
+
 /* CREATION DES VUES */
-create or replace view v_listes_comptes as 
+create or replace view v_listes_comptes as
     select i.id as individu_id,
         c.numero_compte,
         a.code_agence,
         a.code_banque,
-        c.cle_rib, 
+        c.cle_rib,
         c.type_compte,
         case when type_compte = 'E' then 'Compte épargne' else 'Compte courant' end as libelle_type_compte,
         a.libelle as libelle_agence
@@ -334,8 +340,8 @@ create or replace view v_listes_comptes as
     join agences a on a.id = c.agence_id|
 
 create or replace view v_soldes_comptes as
-    select individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte, libelle_type_compte, libelle_agence, round(sum(montant),2) as solde 
-    from 
+    select individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte, libelle_type_compte, libelle_agence, round(sum(montant),2) as solde
+    from
         (select lc.*,  case when m.sens = 'C' then coalesce(montant, 0) else coalesce(concat('-', montant), 0) end as montant
         from v_listes_comptes lc
         left join mouvements m on m.numero_compte_id = lc.numero_compte
@@ -354,7 +360,7 @@ create or replace view v_beneficiaires as
 	join individus i on i.id = b.individu_source_id
 	join individus i2 on i2.id = b.individu_beneficiaire_id
     order by b.libelle, i2.nom, i2.prenom|
-    
+
 create or replace view v_comptes_beneficiaires as
 	select b.individu_beneficiaire_id, b.nom, b.prenom, b.individu_source_id, b.libelle, c.numero_compte
 	from v_beneficiaires b
