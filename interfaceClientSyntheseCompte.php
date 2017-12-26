@@ -152,8 +152,8 @@
 
 
         </table>-->
-    </div>
   </div>
+</div>
 
 <footer class="container-fluid text-center">
   <div class="row">

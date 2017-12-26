@@ -1,17 +1,3 @@
-<?php
-
-  if ($_SERVER["REQUEST_METHOD"] == "POST") {
-      require "traitement.php";
-      $type_compte = $_POST['typeCompte'];
-     if (nouveauCompte($type_compte)) {
-          header('Location:interfaceClientSyntheseCompte.php');
-      }
-      else{
-        $err = "Erreur lors de la création du compte";
-      }
-  }
- ?>
-
 <html lang="fr">
 <head>
   <title>Ouverture nouveau compte</title>
@@ -24,7 +10,19 @@
 </head>
 <body>
 
-<?php include("interfaceClientEnTete.php") ?>
+<?php
+  include("interfaceClientEnTete.php")
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      require "traitement.php";
+      $type_compte = $_POST['typeCompte'];
+     if (nouveauCompte($type_compte)) {
+          header('Location:interfaceClientSyntheseCompte.php');
+      }
+      else{
+        $err = "Erreur lors de la création du compte";
+      }
+  }
+?>
 
 <div class="container-fluid text-center">
   <div class="row content">

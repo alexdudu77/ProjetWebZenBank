@@ -1,14 +1,3 @@
-<?php
-  
-  if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $err = commandeChequier($_POST['listeCompte'], $_POST['nombreChequier']);
-    if ($err == "") {
-        $err = "Commande bien effectuée";
-      }
-    }
-
- ?>
-
 <html lang="fr">
 <head>
   <title>Commande de ch&eacute;quier</title>
@@ -21,7 +10,15 @@
 </head>
 <body>
 
-<?php include("interfaceClientEnTete.php") ?>
+<?php
+  include("interfaceClientEnTete.php")
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $err = commandeChequier($_POST['listeCompte'], $_POST['nombreChequier']);
+    if ($err == "") {
+      $err = "Commande bien effectuée";
+    }
+  }
+?>
 
 <div class="container-fluid text-center">
   <div class="row content">

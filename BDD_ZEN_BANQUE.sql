@@ -5,16 +5,16 @@ create database if not exists zenbanque;
 use zenbanque;
 
 /* tables de principales */
-create table individus(id int primary key auto_increment, 
+create table individus(id int primary key auto_increment,
                     civilite char(3) not null, /* MME / M */
 					nom varchar(255) not null,
-					nom_jeune_fille varchar(255),					
-					prenom varchar(255) not null, 
-					date_naissance date, 
+					nom_jeune_fille varchar(255),
+					prenom varchar(255) not null,
+					date_naissance date,
 					email varchar(50) not null,
 					portable varchar(10),
 					fixe varchar(10),
-					adresse varchar(255), 
+					adresse varchar(255),
 					code_postal int(5),
 					ville varchar(255),
 					mot_de_passe int(5)
@@ -27,32 +27,32 @@ create table agences(id int primary key auto_increment,
 					code_agence int(5),
 					code_banque int(5)
 					)engine=InnoDB default charset=UTF8;
-		
-insert into agences(libelle, email, departement, code_agence, code_banque) values 
-	('Zen 94', 'zenbanque94@gmail.com', 94, 94000, 17515), 
+
+insert into agences(libelle, email, departement, code_agence, code_banque) values
+	('Zen 94', 'zenbanque94@gmail.com', 94, 94000, 17515),
 	('Zen 75', 'zenbanque75@gmail.com', 75, 75000, 17515),
     ('Zen 93', 'zenbanque93@gmail.com', 93, 93000, 17515),
     ('Zen 91', 'zenbanque91@gmail.com', 91, 91000, 17515);
-					
+
 create table comptes(numero_compte varchar(11) primary key,
-					libelle varchar(255),                   
+					libelle varchar(255),
                     cle_rib int(2),
-					type_compte char(1),/*C pour courant / E pour épargne*/					
+					type_compte char(1),/*C pour courant / E pour épargne*/
                     agence_id int,
-					individu_id int,                    
+					individu_id int,
 					foreign key (individu_id) references individus(id),
                     foreign key (agence_id) references agences(id)
-					)engine=InnoDB default charset=UTF8; 
-					
-create table beneficiaires(id int primary key auto_increment, 
-					libelle varchar(255),						
+					)engine=InnoDB default charset=UTF8;
+
+create table beneficiaires(id int primary key auto_increment,
+					libelle varchar(255),
 					individu_source_id int not null,
 					individu_beneficiaire_id int not null,
 					numero_compte_id varchar(11) not null,
 					foreign key (individu_source_id) references individus(id),
 					foreign key (individu_beneficiaire_id) references individus(id),
 					foreign key (numero_compte_id) references comptes(numero_compte)
-					)engine=InnoDB default charset=UTF8;											               
+					)engine=InnoDB default charset=UTF8;
 
 create table mouvements(id int primary key auto_increment,
 					libelle varchar(255),
@@ -60,7 +60,7 @@ create table mouvements(id int primary key auto_increment,
                     montant decimal(10,2),
                     date_mouvement date,
                     type_mouvement varchar(10), /* CB/V/D/R */
-					numero_compte_id varchar(11),                    
+					numero_compte_id varchar(11),
 					foreign key (numero_compte_id) references comptes(numero_compte)
 					)engine=InnoDB default charset=UTF8;
 
@@ -70,7 +70,7 @@ create table historisation(id int primary key auto_increment,
                     modification varchar(255),
                     foreign key (individu_id) references individus(id)
 					)engine=InnoDB default charset=UTF8;
-					
+
 create table commandes_chequiers(id int primary key auto_increment,
                     individu_id int,
 					numero_compte_id varchar(11),
@@ -89,7 +89,7 @@ begin
     if old.nom <> new.nom then
         var_modification := new.nom;
     end if;
-    
+
     call historisation(old.id, var_modification);
 end |
 delimiter;
@@ -99,8 +99,8 @@ delimiter |
 /* CREATION DES FONCTIONS */
 drop function if exists creation_compte|
 create function creation_compte(
-    in_individu_id integer, 
-    in_libelle varchar(255),                   
+    in_individu_id integer,
+    in_libelle varchar(255),
 	in_type_compte char(1)/*C pour courant / E pour épargne*/					)
 returns varchar(11)
 begin
@@ -114,22 +114,22 @@ begin
     */
     select max(CAST(numero_compte AS UNSIGNED))+1 into var_numero_compte_int from comptes;
     if var_numero_compte_int = 1 or var_numero_compte_int is null then
-        set var_numero_compte_char = '11111111111';     
+        set var_numero_compte_char = '11111111111';
     else
     	set var_numero_compte_char = CAST(var_numero_compte_int AS char(11));
-    end if;        
-    
+    end if;
+
 	select left(code_postal, 2) into var_departement from individus where id = in_individu_id;
 	select id into var_agence_id from agences where departement = var_departement;
-	
-    /* 
+
+    /*
         si le code postal n'existe pas dans la table des agences, on créé celle ci
     */
     if var_agence_id is null then
         insert into agences(libelle, email, departement, code_agence, code_banque) values (concat('Zen ', var_departement), concat('zenbanque', var_departement, '@gmail.com'), var_departement, concat(var_departement, '000'), 17515);
         select id into var_agence_id from agences where departement = var_departement;
-    end if;    
-    
+    end if;
+
     /* création du compte */
 	begin
 		declare var_cle_rib int;
@@ -140,16 +140,16 @@ begin
 		end if;
 		insert into comptes(numero_compte, libelle, cle_rib, type_compte, agence_id, individu_id) values (var_numero_compte_char, in_libelle, var_cle_rib, in_type_compte, var_agence_id, in_individu_id);
     end;
-    
+
     /* historisation */
     call historisation(in_individu_id, concat('CREATION DU COMPTE ', var_numero_compte_char));
-    
+
     return var_numero_compte_char;
 end|
 
 drop function if exists historisation|
 create procedure historisation(
-    IN in_individu_id int, 
+    IN in_individu_id int,
     IN in_modification varchar(255))
 begin
     insert into historisation(individu_id, date_heure, modification) values (in_individu_id, now(), in_modification);
@@ -162,17 +162,17 @@ returns int
 begin
     declare var_mot_de_passe int;
 
-    select max(mot_de_passe)+1 
+    select max(mot_de_passe)+1
         into var_mot_de_passe
     from individus;
     /* on initialise le mot de passe sur 5 digits si il en existe pas encore en base*/
     IF var_mot_de_passe = 1 or var_mot_de_passe is null THEN
         set var_mot_de_passe = 12345;
     end if;
-        
+
     /* historisation */
     call historisation(in_individu_id, 'NOUVEAU MOT DE PASSE');
-    
+
     return var_mot_de_passe;
 end|
 
@@ -180,13 +180,13 @@ drop function if exists creation_individu|
 create function creation_individu(
     in_civilite char(3), /* MME / M */
     in_nom_usage varchar(255),
-	in_nom_jeune_fille varchar(255),					
-	in_prenom varchar(255), 
-	in_date_naissance date, 
+	in_nom_jeune_fille varchar(255),
+	in_prenom varchar(255),
+	in_date_naissance date,
 	in_email varchar(50),
 	in_portable varchar(10),
 	in_fixe varchar(10),
-	in_adresse varchar(255), 
+	in_adresse varchar(255),
 	in_code_postal int(5),
 	in_ville varchar(255)
 )
@@ -197,24 +197,24 @@ begin
     /* création de l'individu */
     insert into individus(civilite, nom, nom_jeune_fille, prenom, date_naissance, email, portable, fixe, adresse, code_postal, ville)
         values (in_civilite, in_nom_usage, in_nom_jeune_fille, in_prenom, in_date_naissance, in_email, in_portable, in_fixe, in_adresse, in_code_postal, in_ville);
-        
+
     select id into var_individu_id from individus where email = in_email;
-    
+
     /* génération du mot de passe */
     update individus set
         mot_de_passe = generation_mot_de_passe(var_individu_id)
     where id = var_individu_id;
-    
-    /* création du compte courant */  
-    begin    
+
+    /* création du compte courant */
+    begin
         declare var_numero_compte varchar(11);
-        select creation_compte(var_individu_id, 'Compte courant', 'C') into var_numero_compte;    
+        select creation_compte(var_individu_id, 'Compte courant', 'C') into var_numero_compte;
         insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Offre de bienvennue', 'C', 100.00, CURDATE(), 'V', var_numero_compte);
     end;
-        
+
     /* historisation */
     call historisation(var_individu_id, 'CREATION');
-    
+
     return var_individu_id;
 end|
 
@@ -227,15 +227,15 @@ create function commande_chequiers(
 returns varchar(255)
 begin
 	declare nbr_chequier int;
-	
-	select count(nombre) into nbr_chequier 
-	from commandes_chequiers 
+
+	select count(nombre) into nbr_chequier
+	from commandes_chequiers
 	where individu_id = in_individu_id
 	  and numero_compte_id = in_num_compte
 	  and datediff(CURDATE(), date_commande) >= 30;
-	
+
 	if (nbr_chequier > 2) then
-		return "Nombre de chéquier maximum atteind";	
+		return "Nombre de chéquier maximum atteint";
 	elseif (in_nombre + nbr_chequier > 2) then
 		return "Le nombre de chéquier maximum commandé est dépassé.";
 	else
@@ -263,17 +263,22 @@ select creation_individu('M', 'ALI', '', 'Baba', '1971-06-28', 'ababa@hotmail.fr
 /* INITIALISATION DES MOUVEMENTS*/
 insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Salaire', 'C', '3256.25', '2017-12-28', 'V', '11111111111')|
 insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('EDF', 'D', '95.60', '2017-12-29', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai1', 'D', '12', '2017-12-29', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai2', 'D', '50', '2017-12-19', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai3', 'D', '20', '2017-12-20', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai4', 'C', '12', '2017-12-22', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai5', 'D', '30', '2017-12-29', 'P', '11111111111')|
  /* INITIALISATION DES BENEFICIAIRES*/
 insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 1', 1, 2, '11111111112')|
 insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 2', 1, 3, '11111111113')|
 
 /* CREATION DES VUES */
 create or replace view v_listes_comptes
-as select i.id as individu_id, 
-    c.numero_compte, 
-    a.code_agence, 
-    a.code_banque, 
-    cle_rib, 
+as select i.id as individu_id,
+    c.numero_compte,
+    a.code_agence,
+    a.code_banque,
+    cle_rib,
     case when type_compte = 'E' then 'Compte épargne' else 'Compte courant' end as type_compte,
 	a.libelle as libelle_agence
 from individus i
