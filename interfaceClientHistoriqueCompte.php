@@ -132,10 +132,11 @@
       <form method="post" action="traitement.php">
         <p>
         <label for="listecompte">Choisissez un compte</label><br />
-        <select name="listCompte" id="listeCompte">
-          <option value="compte1">compte1</option>
-          <option value="compte2">compte2</option>
-        </select>
+        <!-- Charger la liste des comptes courants -->
+          <?php
+            require "AfficherListeComptesTraitement.php";
+            afficherListeComptes($_SESSION['id']);
+          ?>
         </p>
       </form>
       <table id="historiqueCompte" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -157,79 +158,11 @@
         </tfoot>
         <tbody>
           <!-- Lignes du tableau / A INCLURE DANS CODE PHP -->
-            <tr>
-                <td>12/10/2017</td>
-                <td>Supermarché</td>
-                <td>23,4</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>14/10/2017</td>
-                <td>Fnac</td>
-                <td>104</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>14/10/2017</td>
-                <td>Restaurant</td>
-                <td>34,6</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>15/10/2017</td>
-                <td>Médecin</td>
-                <td>22</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>16/10/2017</td>
-                <td>Salaire</td>
-                <td></td>
-                <td>2789,86</td>
-            </tr>
-            <tr>
-                <td>16/10/2017</td>
-                <td>Autoroute</td>
-                <td>23</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>16/10/2017</td>
-                <td>Fnac</td>
-                <td>100</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>17/10/2017</td>
-                <td>Decathlon</td>
-                <td>56,9</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>17/10/2017</td>
-                <td>Total</td>
-                <td>64,8</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>17/10/2017</td>
-                <td>Supermarché</td>
-                <td>45,9</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>20/10/2017</td>
-                <td>Restaurant</td>
-                <td>38,8</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>21/10/2017</td>
-                <td>Remboursement</td>
-                <td></td>
-                <td>102</td>
-            </tr>
-            <!-- Fin lignes tableau -->
+          <?php
+            require "interfaceClientHistoriqueCompteTraitement.php";
+            $id_compte=$_GET['compte'];
+            affichageHistoriqueCompte($id_compte);
+          ?>
         </tbody>
       </table>
       <!-- JQuery prenant en charge la pagination -->
