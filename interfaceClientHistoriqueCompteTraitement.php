@@ -1,5 +1,6 @@
 <?php
     function affichageHistoriqueCompte($id_compte){
+
       $sql="select DATE_FORMAT(date_mouvement,'%d/%m/%Y'),libelle,montant,sens from v_mouvements_comptes where numero_compte_id=".$id_compte."";
       $requete = executeQuery($sql);
       while ($result = $requete->fetch_row()){

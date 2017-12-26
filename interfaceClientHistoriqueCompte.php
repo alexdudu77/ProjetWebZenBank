@@ -157,8 +157,8 @@
             <tr>
                 <th>Date</th>
                 <th>Libell&eacute;</th>
-                <th>D&eacute;bit</th>
-                <th>Cr&eacute;dit</th>
+                <th>D&eacute;bit (en €)</th>
+                <th>Cr&eacute;dit (en €)</th>
             </tr>
         </thead>
         <tfoot>
