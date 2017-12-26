@@ -129,7 +129,7 @@
     <div class="col-md-9 text-left">
       <br>
       <!-- A MODIFIER -->
-      <form method="post" action="traitement.php">
+      <form method="post" action="interfaceClientHistoriqueCompte.php">
         <p>
         <label for="listecompte">Choisissez un compte</label><br />
         <!-- Charger la liste des comptes courants -->
@@ -138,7 +138,21 @@
             afficherListeComptes($_SESSION['id']);
           ?>
         </p>
+        <input type="submit" value="Afficher" title="Valider pour afficher l'historique" />
       </form>
+      <br>
+
+      <?php
+      //Affichage du numéro de compte consulté
+      if (isset($_POST['listeCompte'])) {
+        $id_compte = $_POST['listeCompte'];
+      }
+      else{
+        $id_compte=$_GET['compte'];
+      }
+      echo "<h3> Numéro de compte: ".$id_compte."</h3>";
+    ?>
+
       <table id="historiqueCompte" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
             <tr>
@@ -157,12 +171,17 @@
             </tr>
         </tfoot>
         <tbody>
-          <!-- Lignes du tableau / A INCLURE DANS CODE PHP -->
+          <!-- Affichage de l'historique des opérations -->
           <?php
-            require "interfaceClientHistoriqueCompteTraitement.php";
+          require "interfaceClientHistoriqueCompteTraitement.php";
+          if (isset($_POST['listeCompte'])) {
+            $id_compte = $_POST['listeCompte'];
+          }
+          else{
             $id_compte=$_GET['compte'];
-            affichageHistoriqueCompte($id_compte);
-          ?>
+          }
+          affichageHistoriqueCompte($id_compte);
+        ?>
         </tbody>
       </table>
       <!-- JQuery prenant en charge la pagination -->
