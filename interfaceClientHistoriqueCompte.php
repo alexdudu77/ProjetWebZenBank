@@ -132,10 +132,11 @@
       <form method="post" action="traitement.php">
         <p>
         <label for="listecompte">Choisissez un compte</label><br />
-        <select name="listCompte" id="listeCompte">
-          <option value="compte1">compte1</option>
-          <option value="compte2">compte2</option>
-        </select>
+        <!-- Charger la liste des comptes courants -->
+          <?php
+            require "AfficherListeComptesTraitement.php";
+            afficherListeComptes($_SESSION['id']);
+          ?>
         </p>
       </form>
       <table id="historiqueCompte" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -157,7 +158,12 @@
         </tfoot>
         <tbody>
           <!-- Lignes du tableau / A INCLURE DANS CODE PHP -->
-            <tr>
+          <?php
+            require "interfaceClientHistoriqueCompteTraitement.php";
+            $id_compte=$_GET['compte'];
+            historiqueCompte($id_compte);
+          ?>
+          <!-- <tr>
                 <td>12/10/2017</td>
                 <td>Supermarché</td>
                 <td>23,4</td>
@@ -228,7 +234,7 @@
                 <td>Remboursement</td>
                 <td></td>
                 <td>102</td>
-            </tr>
+            </tr> -->
             <!-- Fin lignes tableau -->
         </tbody>
       </table>
