@@ -140,44 +140,29 @@
       //Affichage du numéro de compte consulté
       if (isset($_POST['listeCompte'])) {
         $id_compte = $_POST['listeCompte'];
+        echo "<h3> Numéro de compte: ".$id_compte."</h3>";
       }
-      else{
+      elseif (isset($_GET['compte'])) {
         $id_compte=$_GET['compte'];
+        echo "<h3> Numéro de compte: ".$id_compte."</h3>";
       }
-      echo "<h3> Numéro de compte: ".$id_compte."</h3>";
+      else {
+        echo "<h3>Veuillez choisir un numéro de compte</h3>";
+      }
     ?>
+    <!-- Chargement du tableau d'historique des opérations -->
+    <?php
+      require "interfaceClientHistoriqueCompteTraitement.php";
+      if (isset($_POST['listeCompte'])) {
+        $id_compte = $_POST['listeCompte'];
+        affichageHistoriqueCompte($id_compte);
+      }
+      elseif(isset($_GET['compte'])){
+        $id_compte=$_GET['compte'];
+        affichageHistoriqueCompte($id_compte);
+      }
 
-      <table id="historiqueCompte" class="table table-striped table-bordered" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Libell&eacute;</th>
-                <th>D&eacute;bit (en €)</th>
-                <th>Cr&eacute;dit (en €)</th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <th>Date</th>
-                <th>Libell&eacute;</th>
-                <th>D&eacute;bit (en €)</th>
-                <th>Cr&eacute;dit (en €)</th>
-            </tr>
-        </tfoot>
-        <tbody>
-          <!-- Chargement du tableau d'historique des opérations -->
-          <?php
-          require "interfaceClientHistoriqueCompteTraitement.php";
-          if (isset($_POST['listeCompte'])) {
-            $id_compte = $_POST['listeCompte'];
-          }
-          else{
-            $id_compte=$_GET['compte'];
-          }
-          affichageHistoriqueCompte($id_compte);
-        ?>
-        </tbody>
-      </table>
+    ?>
       <!-- JQuery prenant en charge la pagination -->
       <script type="text/javascript">
         $(document).ready(function() {
