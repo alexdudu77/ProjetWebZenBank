@@ -11,7 +11,7 @@
 <body>
 
 <?php
-  include("interfaceClientEnTete.php")
+  include("interfaceClientEnTete.php");
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $err = commandeChequier($_POST['listeCompte'], $_POST['nombreChequier']);
     if ($err == "") {
