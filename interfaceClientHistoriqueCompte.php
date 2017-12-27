@@ -165,7 +165,7 @@
             </tr>
         </tfoot>
         <tbody>
-          <!-- Affichage de l'historique des opérations -->
+          <!-- Chargement du tableau d'historique des opérations -->
           <?php
           require "interfaceClientHistoriqueCompteTraitement.php";
           if (isset($_POST['listeCompte'])) {

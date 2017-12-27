@@ -124,94 +124,56 @@
     <div class="col-md-9 text-left">
       <br>
       <!-- A MODIFIER -->
-      <form method="post" action="traitement.php">
+      <form method="post" action="interfaceClientHistoriqueVirement.php">
         <p>
-        <!-- Charger la liste des comptes du client -->
-        <label for="commpte">Choisissez un compte</label><br />
-        <select name="compte" id="compte">
-          <option value="compte1">compte1</option>
-          <option value="compte2">compte2</option>
-        </select>
+        <label for="listecompte">Choisissez un compte</label><br />
+        <!-- Charger la liste des comptes courants -->
+          <?php
+            require "AfficherListeComptesTraitement.php";
+            afficherListeComptes($_SESSION['id']);
+          ?>
         </p>
+        <input type="submit" value="Afficher" title="Valider pour afficher l'historique" />
       </form>
-      <table id="historiqueCompte" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <?php
+      //Affichage du numéro de compte consulté
+      if (isset($_POST['listeCompte'])) {
+        $id_compte = $_POST['listeCompte'];
+      }
+      else{
+        $id_compte=$_GET['compte'];
+      }
+      echo "<h3> Numéro de compte: ".$id_compte."</h3>";
+    ?>
+      <table id="historiqueVirement" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Libell&eacute;</th>
-                <th>Montant (en €)</th>
+                <th>D&eacute;bit (en €)</th>
+                <th>Cr&eacute;dit (en €)</th>
             </tr>
         </thead>
         <tfoot>
             <tr>
                 <th>Date</th>
                 <th>Libell&eacute;</th>
-                <th>Montant (en €)</th>
+                <th>D&eacute;bit (en €)</th>
+                <th>Cr&eacute;dit (en €)</th>
             </tr>
         </tfoot>
         <tbody>
-          <!-- Lignes du tableau / A INCLURE DANS CODE PHP -->
-            <tr>
-                <td>12/10/2017</td>
-                <td>Operation1</td>
-                <td>23,4</td>
-            </tr>
-            <tr>
-                <td>14/10/2017</td>
-                <td>Operation2</td>
-                <td>104</td>
-            </tr>
-            <tr>
-                <td>14/10/2017</td>
-                <td>Operation3</td>
-                <td>34,6</td>
-            </tr>
-            <tr>
-                <td>15/10/2017</td>
-                <td>Operation4</td>
-                <td>22</td>
-            </tr>
-            <tr>
-                <td>16/10/2017</td>
-                <td>Operation5</td>
-                <td>2789,86</td>
-            </tr>
-            <tr>
-                <td>16/10/2017</td>
-                <td>Operation6</td>
-                <td>23</td>
-            </tr>
-            <tr>
-                <td>16/10/2017</td>
-                <td>Operation7</td>
-                <td>100</td>
-            </tr>
-            <tr>
-                <td>17/10/2017</td>
-                <td>Operation8</td>
-                <td>56,9</td>
-            </tr>
-            <tr>
-                <td>17/10/2017</td>
-                <td>Operation9</td>
-                <td>64,8</td>
-            </tr>
-            <tr>
-                <td>17/10/2017</td>
-                <td>Operation10</td>
-                <td>45,9</td>
-            </tr>
-            <tr>
-                <td>20/10/2017</td>
-                <td>Operation11</td>
-                <td>38,8</td>
-            </tr>
-            <tr>
-                <td>21/10/2017</td>
-                <td>Operation12</td>
-                <td>102</td>
-            </tr>
-            <!-- Fin lignes tableau -->
+          <!-- Chargement du tableau d'historique des virements -->
+          <?php
+            require "interfaceClientHistoriqueVirementTraitement.php";
+            if (isset($_POST['listeCompte'])) {
+              $id_compte = $_POST['listeCompte'];
+            }
+            else{
+              $id_compte=$_GET['compte'];
+            }
+            affichageHistoriqueVirement($id_compte);
+          ?>
         </tbody>
       </table>
       <!-- JQuery permettant la pagination -->
