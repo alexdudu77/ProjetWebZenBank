@@ -15,7 +15,9 @@
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $err = commandeChequier($_POST['listeCompte'], $_POST['nombreChequier']);
     if ($err == "") {
-      $err = "Commande bien effectuée";
+      header("location:interfaceClientHistoriqueVirement.php?numerocompte=".$_POST['listeCompte']);
+    }else{
+            echo '<script type="text/javascript">window.alert("'.$err.'");</script>';
     }
   }
 ?>
@@ -172,9 +174,6 @@
         <a href="interfaceClientSyntheseCompte.html"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Valider commande</button>
         </br>
-        <div>
-          <?php if (isset($err)) {echo $err;} ?>
-        </div>
       </form>
     </div>
   </div>

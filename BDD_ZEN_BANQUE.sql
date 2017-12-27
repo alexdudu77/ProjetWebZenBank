@@ -227,12 +227,13 @@ create function commande_chequiers(
 returns varchar(255)
 begin
 	declare nbr_chequier int;
-
+    /* On Compte le nombre de chequier déjà commandé dans le mois */
 	select count(nombre) into nbr_chequier
 	from commandes_chequiers
 	where individu_id = in_individu_id
 	  and numero_compte_id = in_num_compte
-	  and datediff(CURDATE(), date_commande) >= 30;
+	  and datediff(CURDATE(), date_commande) >= 0
+      and datediff(CURDATE(), date_commande) <= 30;
 
 	if (nbr_chequier > 2) then
 		return "Nombre de chéquier maximum atteint";
