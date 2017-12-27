@@ -1,3 +1,25 @@
+<?php
+  if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+  }
+
+   if($_SERVER["REQUEST_METHOD"] == "POST") {
+      // username and password sent from form
+      require "traitement.php";
+
+      $myusername = $_POST['idClient'];
+      $mypassword = $_POST['passClient'];
+
+      if (connexionMonCompte($myusername, $mypassword)) {
+         $_SESSION['login_user'] = $myusername;
+         $p = "location: interfaceClientSyntheseCompte.php?id=".$_SESSION['id']."";
+         header($p);
+      } else {
+         $error = "Login ou mot de passe invalide";
+         echo '<script type="text/javascript">window.alert("'.$error.'");</script>';
+      }
+   }
+?>
 
 <html lang="fr">
 <head>
@@ -15,7 +37,7 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>                       
+        <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">Zen Bank</a>
     </div>
@@ -23,42 +45,20 @@
       <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <div>
-        <a href="login.php" class="btn btn-info">Mon Compte <span class="glyphicon glyphicon-log-in"></span></a>
-      </div>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#connexionModal">
-          Connexion <span class="glyphicon glyphicon-log-in"></span>
-        </button>
-
-        <!-- Fenêtre de connexion -->
-        <div class="modal fade" id="connexionModal" tabindex="-1" role="dialog" aria-labelledby="connexionModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="connexionModalLabel">Connexion à votre compte client</h5>
-              </div>
-              <form method="post" action="connexion.php">
-              <div class="modal-body">
-                <div class="form-group">
-                  <label for="idClient">Identifiant client:</label>
-                  <input type="text" class="form-control" id="idClient" placeholder="Saisissez votre identifiant">
-                </div>
-                <div class="form-group">
-                  <label for="pwd">Password:</label>
-                  <input type="password" class="form-control" id="passClient" placeholder="Saisissez votre mot de passe"><span class="glyphicon glyphicon-keys"></span>
-                  <a href="interfaceOubliMDP.html">Mot de passe oubli&eacute;?</a>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                <button type="submit" class="btn btn-danger" id="btnConnexion"><label>Se connecter</label></button>
-              </div>
-            </form>
+      <form method="post" action="">
+        <div class="marginTop">
+          <div class="col-lg-1 col-sm-12 col-xs-12 pull-right">
+            <button type="submit" class="btn btn-danger">Se connecter <span class="glyphicon glyphicon-log-in"></span></button>
+          </div>
+          <div class="col-lg-2 col-sm-12 col-xs-12 pull-right">
+              <input type="password" class="form-control" name="passClient" placeholder="Saisissez votre mot de passe" required><span class="glyphicon glyphicon-keys"></span>
+              <a href="interfaceOubliMDP.php" class="light-blue">Mot de passe oubli&eacute;?</a>
+          </div>
+          <div class="col-lg-2 col-sm-12 col-xs-12 pull-right">
+              <input type="email" class="form-control" name="idClient" placeholder="Saisissez votre identifiant" required>
           </div>
         </div>
-      </div>
-      </ul>
+      </form>
     </div>
   </div>
 </nav>
