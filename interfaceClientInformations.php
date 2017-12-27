@@ -64,11 +64,6 @@
                     <a href="interfaceClientHistoriqueCompte.php">Historique des opérations</a>
                   </td>
                 </tr>
-                <tr>
-                  <td>
-                    <a href="interfaceClientRIB.php">RIB</a>
-                  </td>
-                </tr>
               </table>
             </div>
           </div>

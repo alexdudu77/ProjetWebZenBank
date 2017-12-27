@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="fr">
 <head>
   <title>RIB</title>
@@ -79,11 +78,6 @@
                     <a href="interfaceClientHistoriqueCompte.php">Historique des opérations</a>
                   </td>
                 </tr>
-                <tr>
-                  <td>
-                    <a href="interfaceClientRIB.php">RIB</a>
-                  </td>
-                </tr>
               </table>
             </div>
           </div>
@@ -145,37 +139,16 @@
     </div>
     <div class="col-md-9 text-left">
       <br>
-      <!-- A MODIFIER / UNIQUEMENT COMPTES COURANTS-->
-      <form method="post" action="traitement.php">
-        <p>
-        <label for="listeCompte">Choisissez un compte</label><br />
-        <!-- Charger la liste des comptes clients -->
-        <select name="listeCompte" id="listeCompte">
-          <option value="compte1">compte1</option>
-          <option value="compte2">compte2</option>
-        </select>
-        </p>
-      </form>
+
       <table id="RIBClient" class="table table-striped table-bordered" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Banque</th>
-                <th>Guichet</th>
-                <th>Compte</th>
-                <th>RIB</th>
-                <th>Agence</th>
-            </tr>
-        </thead>
-        <tbody>
-          <!-- Lignes du tableau / A INCLURE DANS CODE PHP -->
-            <tr>
-                <td>12345</td>
-                <td>12345</td>
-                <td>1234567891A</td>
-                <td>12</td>
-                <td>Agence Pigeon</td>
-            </tr>
-        </tbody>
+          <!-- Lignes du tableau -->
+          <?php
+            if (isset($_GET['numcompte'])){
+              require "interfaceClientRIBTraitement.php";
+              afficherRIBComptes($_SESSION['id'], $_GET['numcompte']);
+            }
+          ?>
+
       </table>
       <button id="exportPDF" class="btn btn-lg clearfix btn-default"><img src="images/pdf.png" id="iconePDF" /> Exporter au format PDF</button>
     </div>

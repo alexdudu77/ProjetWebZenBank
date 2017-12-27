@@ -55,11 +55,6 @@
                     <a href="interfaceClientHistoriqueCompte.html">Historique des opérations</a>
                   </td>
                 </tr>
-                <tr>
-                  <td>
-                    <a href="interfaceClientRIB.html">RIB</a>
-                  </td>
-                </tr>
               </table>
             </div>
           </div>
