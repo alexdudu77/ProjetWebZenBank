@@ -2,12 +2,12 @@
       margin-bottom: 0;
       border-radius: 0;
     }
-    
+
     footer {
       background-color: #f2f2f2;
       padding: 25px;
     }
-    
+
   .carousel-inner img {
       width: 100%;
       margin: auto;
@@ -17,12 +17,22 @@
   img{
     border-radius: 5px;
   }
-
   @media (max-width: 600px) {
     .carousel-caption {
-      display: none; 
+      display: none;
     }
     #well{
       padding-top: 20px;
     }
+  }
+  /*Form login*/
+  .marginTop {
+    margin: 10px 0 0 0;
+  }
+  .light-blue {
+    color: #56abf5;
+  }
+  .light-blue:hover {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
   }
