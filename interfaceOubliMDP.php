@@ -8,7 +8,7 @@
       $email = $_POST['identifiantClient'];
       if (testExistanceClient($email)){
         if (generationMDP($email)) {
-          header('Location:login.php');
+          header('Location:index.php');
         }
         else {
           $err = "Le login n'existe pas";
@@ -22,7 +22,7 @@
 
 <html lang="fr">
 <head>
-  <title>Rejoindre Zen Bank</title>
+  <title>Réinitialisation de votre mot de passe</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">

@@ -66,7 +66,7 @@
                 <div class="form-group">
                   <label for="pwd">Password:</label>
                   <input type="password" class="form-control" name="passClient" placeholder="Saisissez votre mot de passe" required><span class="glyphicon glyphicon-keys"></span>
-                  <a href="interfaceOubliMDP.php" class="light-blue">Mot de passe oubli&eacute;?</a>
+                  <a href="interfaceOubliMDP.php" class="light-blue" id="oubliMDP">Mot de passe oubli&eacute;?</a>
                 </div>
               </div>
               <div class="modal-footer">
