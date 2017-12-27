@@ -45,20 +45,38 @@
       <ul class="nav navbar-nav">
         <li class="active"><a href="#">Home</a></li>
       </ul>
-      <form method="post" action="">
-        <div class="marginTop">
-          <div class="col-lg-1 col-sm-12 col-xs-12 pull-right">
-            <button type="submit" class="btn btn-danger">Se connecter <span class="glyphicon glyphicon-log-in"></span></button>
-          </div>
-          <div class="col-lg-2 col-sm-12 col-xs-12 pull-right">
-              <input type="password" class="form-control" name="passClient" placeholder="Saisissez votre mot de passe" required><span class="glyphicon glyphicon-keys"></span>
-              <a href="interfaceOubliMDP.php" class="light-blue">Mot de passe oubli&eacute;?</a>
-          </div>
-          <div class="col-lg-2 col-sm-12 col-xs-12 pull-right">
-              <input type="email" class="form-control" name="idClient" placeholder="Saisissez votre identifiant" required>
+      <ul class="nav navbar-nav navbar-right">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#connexionModal">
+          Connexion <span class="glyphicon glyphicon-log-in"></span>
+        </button>
+
+        <!-- Fenêtre de connexion -->
+        <div class="modal fade" id="connexionModal" tabindex="-1" role="dialog" aria-labelledby="connexionModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="connexionModalLabel">Connexion à votre compte client</h5>
+              </div>
+              <form method="post" action="">
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="idClient">Identifiant client:</label>
+                  <input type="email" class="form-control" name="idClient" placeholder="Saisissez votre identifiant" required>
+                </div>
+                <div class="form-group">
+                  <label for="pwd">Password:</label>
+                  <input type="password" class="form-control" name="passClient" placeholder="Saisissez votre mot de passe" required><span class="glyphicon glyphicon-keys"></span>
+                  <a href="interfaceOubliMDP.php" class="light-blue">Mot de passe oubli&eacute;?</a>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-danger" id="btnConnexion"><label>Se connecter</label></button>
+              </div>
+            </form>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </nav>
