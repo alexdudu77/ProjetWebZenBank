@@ -67,7 +67,7 @@ create table mouvements(id int primary key auto_increment,
 create table historisation(id int primary key auto_increment,
                     individu_id int,
 					date_heure datetime,
-                    modification varchar(255),
+                    modification text,
                     foreign key (individu_id) references individus(id)
 					)engine=InnoDB default charset=UTF8;
 
@@ -85,30 +85,34 @@ drop trigger if exists historisation|
 create trigger historisation after update on individus for each row
 begin
 	declare libelle varchar(255);
-	set libelle = 'Modification individu - ';
+	declare modif text;
+	set libelle = 'Modifications - ';
 	if old.adresse <> new.adresse and new.adresse is not null then
-		call historisation(old.id, concat(libelle, new.adresse));
+		set modif = new.adresse;
     end if;    
 	if old.portable <> new.portable then
-		if new.portable is null then 
-			call historisation(old.id, concat(libelle, 'Suppression du numéro de portable'));
+		if new.portable is null or new.portable = '' then 
+			set modif = concat(modif, ' - Suppression du numéro de portable');
 		else
-			call historisation(old.id, concat(libelle, new.portable));
+			set modif = concat(modif, ' - ', new.portable);
 		end if;
     end if;    
 	if old.code_postal <> new.code_postal and new.code_postal is not null then
-		call historisation(old.id, concat(libelle, new.code_postal));
+		set modif = concat(modif, ' - ', new.code_postal);
     end if;    
 	if old.ville <> new.ville and new.ville is not null then
-		call historisation(old.id, concat(libelle, new.ville));
+		set modif = concat(modif, ' - ', new.ville);
     end if;    
 	if old.fixe <> new.fixe then
-		if new.fixe is null then 
-			call historisation(old.id, concat(libelle, 'Suppression du numéro de fixe'));
+		if new.fixe is null or new.fixe = '' then 
+			set modif = concat(modif, ' - Suppression du numéro de fixe'); 
 		else
-			call historisation(old.id, concat(libelle, new.fixe));
+			set modif = concat(modif, ' - ', new.fixe);
 		end if;
     end if;
+	if modif is not null then
+		insert into historisation(individu_id, date_heure, modification) values (old.id, now(), concat(libelle, modif));
+	end if;
 end|
 
 /* CREATION DES FONCTIONS */
@@ -395,4 +399,16 @@ create or replace view v_comptes_beneficiaires as
     join comptes c2 on c2.individu_id = i.id
     where c2.type_compte = 'E'
     order by libelle, nom, prenom|
+	
+create or replace view v_soldes_total_individu as
+select individu_id, round(sum(credit- (case when debit is null then 0 else debit end)),2) as solde_total
+from (
+	select lc.individu_id,  
+		case when m.sens = 'C' then sum(coalesce(montant, 0)) end as credit, 
+		case when m.sens = 'D' then sum(coalesce(montant, 0)) end as debit
+	from v_listes_comptes lc
+	left join mouvements m on m.numero_compte_id = lc.numero_compte
+	group by lc.numero_compte ) q
+group by individu_id|
+
 delimiter ;
