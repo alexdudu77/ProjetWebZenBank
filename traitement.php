@@ -6,6 +6,7 @@
            exit('Erreur : Problème de connexion à la BDD');
            //return "Pb BDD";
       }
+      $c->set_charset("utf8");
       $res = $c->query($sql);
       $c->close();
       return $res;
