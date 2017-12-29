@@ -1,10 +1,12 @@
 <?php
-
+  
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Controle sur la civilité qui ne peut être mise sur le composant directement
-    if (!isset($_POST["telephoneMobileClient"]) && !isset($_POST["telephoneFixeClient"])
-      && empty($_POST["telephoneMobileClient"]) && empty($_POST["telephoneFixeClient"]))
-    {
+    if (!isset($_POST["titre"])){
+      $err = "La civilité est obligatoire";
+    }elseif ((!isset($_POST["telephoneMobileClient"]) && !isset($_POST["telephoneFixeClient"]))
+      || ($_POST["telephoneMobileClient"] == null && $_POST["telephoneFixeClient"] == null)
+    ) {
       $err = "Un mobile ou un fixe est obligatoire";
     }
 
@@ -31,7 +33,7 @@
           }
 
     			if (nouveauclient($titre, $nom, $prenom, $datenaissance, $email, $portable, $fixe, $adresse, $cp, $ville)) {
-              header('Location:index.html');
+              header('Location:interfaceClientHistoriqueCompte.php?id='.$_SESSION['id']);
     			}
           else{
             $err = "Erreur SQL";
@@ -72,7 +74,6 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
       </ul>
     </div>
   </div>
@@ -86,6 +87,7 @@
         <div style="color:red">
           <?php  if (isset($err)) { echo $err; } ?>
         </div>
+        <br>
         <div class="form-group">
           <label for="titre">Titre *</label>
           <div class="form-group" id="titre">
@@ -132,7 +134,7 @@
           <label for="telephoneFixeClient">T&eacute;l&eacute;phone Fixe</label>
           <input type="tel" class="form-control" name="telephoneFixeClient">
         </div>
-        <a href="index.html"><button type="button" class="btn btn-info">Annuler</button></a>
+        <a href="index.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Envoyer ma demande</button>
       </form>
       </div>
