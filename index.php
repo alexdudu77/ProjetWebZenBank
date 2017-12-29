@@ -71,7 +71,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                <button type="submit" class="btn btn-danger" id="btnConnexion"><label>Se connecter</label></button>
+                <button type="submit" class="btn btn-danger" id="btnConnexion">Se connecter</button>
               </div>
             </form>
           </div>
