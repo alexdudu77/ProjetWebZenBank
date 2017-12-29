@@ -1,5 +1,5 @@
 <?php
-  
+
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Controle sur la civilité qui ne peut être mise sur le composant directement
     if (!isset($_POST["titre"])){
@@ -33,7 +33,7 @@
           }
 
     			if (nouveauclient($titre, $nom, $prenom, $datenaissance, $email, $portable, $fixe, $adresse, $cp, $ville)) {
-              header('Location:interfaceClientHistoriqueCompte.php?id='.$_SESSION['id']);
+              header('Location:interfaceClientSyntheseCompte.php?id='.$_SESSION['id']);
     			}
           else{
             $err = "Erreur SQL";
@@ -74,6 +74,7 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
+        <li class="active"><a href="index.php">Home</a></li>
       </ul>
     </div>
   </div>
@@ -120,7 +121,7 @@
         </div>
         <div class="form-group">
           <label for="codePostalClient">Code postal *</label>
-          <input type="text" class="form-control" name="codePostalClient" required>
+          <input type="text" class="form-control" name="codePostalClient" pattern="^(([0-8][0-9])|(9[0-5])|(2[ab]))[0-9]{3}$" title="5 chiffres sont attendus" required>
         </div>
         <div class="form-group">
           <label for="villeClient">Ville *</label>
@@ -128,11 +129,11 @@
         </div>
         <div class="form-group">
           <label for="telephoneMobileClient">T&eacute;l&eacute;phone Mobile</label>
-          <input type="tel" class="form-control" name="telephoneMobileClient">
+          <input type="tel" class="form-control" name="telephoneMobileClient" pattern="^(?:0|\(?\+33\)?\s?|0033\s?)[1-79](?:[\.\-\s]?\d\d){4}$" title="10 chiffres sont attendus">
         </div>
         <div class="form-group">
           <label for="telephoneFixeClient">T&eacute;l&eacute;phone Fixe</label>
-          <input type="tel" class="form-control" name="telephoneFixeClient">
+          <input type="tel" class="form-control" name="telephoneFixeClient" pattern="^(?:0|\(?\+33\)?\s?|0033\s?)[1-79](?:[\.\-\s]?\d\d){4}$" title="10 chiffres sont attendus">
         </div>
         <a href="index.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Envoyer ma demande</button>
