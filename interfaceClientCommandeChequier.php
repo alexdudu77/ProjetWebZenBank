@@ -66,11 +66,6 @@
                     <a href="interfaceClientHistoriqueCompte.php">Historique des opérations</a>
                   </td>
                 </tr>
-                <tr>
-                  <td>
-                    <a href="interfaceClientRIB.php">RIB</a>
-                  </td>
-                </tr>
               </table>
             </div>
           </div>
@@ -171,7 +166,7 @@
             <label for="lieuLivraisonChequier">A mon domicile </label>
           </div>
         </div>
-        <a href="interfaceClientSyntheseCompte.html"><button type="button" class="btn btn-info">Annuler</button></a>
+        <a href="interfaceClientSyntheseCompte.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Valider commande</button>
         </br>
       </form>
