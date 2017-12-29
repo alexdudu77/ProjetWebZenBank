@@ -157,7 +157,7 @@
         <div class="form-group">
           <label for="montantVirement">Montant du virement </label>
           <div class="input-group">
-            <input type="number" class="form-control" aria-label="Montant en €" name="montantVirement" min="1" required>
+            <input type="number" class="form-control" aria-label="Montant en €" name="montantVirement" min="1" max="1000" required>
             <span class="input-group-addon">€</span>
           </div>
         </div>
