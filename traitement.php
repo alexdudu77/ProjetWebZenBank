@@ -81,6 +81,12 @@
       return $result[0];
     }
 
+    function miseAJourClient($id, $portable, $fixe, $adresse, $cp, $ville){
+      $sql = "update individus set portable = '".$portable."', fixe='".$fixe."', adresse='".$adresse."', code_postal='".$cp."', ville='".$ville."' where id = ".$id."";
+      $requete = executeQuery($sql);
+      return $requete->error == "";
+    }
+
     function initialiseVariablesSession($id, $nom, $prenom){
       if($id != null){
         $_SESSION['id'] = $id;

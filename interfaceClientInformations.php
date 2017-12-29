@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="fr">
 <head>
   <title>Vos informations</title>
@@ -18,7 +18,40 @@
 </head>
 <body>
 
-<?php include("interfaceClientEnTete.php") ?>
+<?php
+  include("interfaceClientEnTete.php");
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Controle sur la civilité qui ne peut être mise sur le composant directement
+    if ((!isset($_POST["telephoneMobileClient"]) && !isset($_POST["telephoneFixeClient"]))
+      || ($_POST["telephoneMobileClient"] == null && $_POST["telephoneFixeClient"] == null)
+    ) {
+      $err = "Un mobile ou un fixe est obligatoire";
+    }
+
+    if (!isset($err)){
+
+      $adresse = $_POST["adresseClient"];
+      $cp = $_POST["codePostalClient"];
+      $ville = $_POST["villeClient"];
+      if (isset($_POST["telephoneMobileClient"])){
+        $portable = $_POST["telephoneMobileClient"];
+      }else{$portable="";}
+      if (isset($_POST["telephoneMobileClient"])){
+        $fixe = $_POST["telephoneFixeClient"];
+      }else{
+        $fixe="";
+      }
+
+			if (miseAJourClient($_SESSION['id'], $portable, $fixe, $adresse, $cp, $ville)) {
+          header('Location:interfaceClientSyntheseCompte.php?id='.$_SESSION['id']);
+			}
+      else{
+        $err = "Erreur SQL";
+			}
+
+    }
+  }
+?>
 
 <div class="container-fluid text-center">
   <div class="row content">
@@ -127,34 +160,17 @@
       <h2>Mise à jour de vos informations personnelles</h2>
       <br>
       <div class="col-md-6">
-      <form method="post" action="A MODIFIER.PHP">
+      <form method="post" action="">
+        <div style="color:red">
+          <?php  if (isset($err)) { echo $err; } ?>
+        </div>
+        <br>
         <!-- Formulaire de modification des informations personnelles -->
         <!-- Charger les informations du client -->
-        <div class="form-group">
-          <label for="emailClient">E-mail</label>
-          <input type="email" class="form-control" id="emailClient">
-        </div>
-        <h3 id="coordonnees">Vos coordonnées</h3>
-        <div class="form-group">
-          <label for="adresseClient">Adresse</label>
-          <input type="text" class="form-control" id="adresseClient">
-        </div>
-        <div class="form-group">
-          <label for="codePostalClient">Code postal</label>
-          <input type="text" class="form-control" id="codePostalClient">
-        </div>
-        <div class="form-group">
-          <label for="villeClient">Ville</label>
-          <input type="text" class="form-control" id="villeClient">
-        </div>
-        <div class="form-group">
-          <label for="telephoneMobileClient">T&eacute;l&eacute;phone Mobile</label>
-          <input type="tel" class="form-control" id="telephoneMobileClient">
-        </div>
-        <div class="form-group">
-          <label for="telephoneFixeClient">T&eacute;l&eacute;phone Fixe</label>
-          <input type="tel" class="form-control" id="telephoneFixeClient">
-        </div>
+        <?php
+          require "interfaceClientInformationsTraitement.php";
+          afficherMesInformations($_SESSION['id']);
+        ?>
         <a href="interfaceClientSyntheseCompte.php"><button type="button" class="btn btn-info">Annuler</button></a>
         <button type="submit" class="btn btn-danger">Mettre à jour</button>
       </form>

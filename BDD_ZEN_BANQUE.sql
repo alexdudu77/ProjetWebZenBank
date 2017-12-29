@@ -15,7 +15,7 @@ create table individus(id int primary key auto_increment,
 					portable varchar(10),
 					fixe varchar(10),
 					adresse varchar(255),
-					code_postal int(5),
+					code_postal char(5),
 					ville varchar(255),
 					mot_de_passe int(5)
 					) engine=InnoDB default charset=UTF8;
@@ -23,16 +23,16 @@ create table individus(id int primary key auto_increment,
 create table agences(id int primary key auto_increment,
 					libelle varchar(50),
                     email varchar(255),
-					departement int(2),
-					code_agence int(5),
+					departement char(2),
+					code_agence char(5),
 					code_banque int(5)
 					)engine=InnoDB default charset=UTF8;
 
 insert into agences(libelle, email, departement, code_agence, code_banque) values
-	('Zen 94', 'zenbanque94@gmail.com', 94, 94000, 17515),
-	('Zen 75', 'zenbanque75@gmail.com', 75, 75000, 17515),
-    ('Zen 93', 'zenbanque93@gmail.com', 93, 93000, 17515),
-    ('Zen 91', 'zenbanque91@gmail.com', 91, 91000, 17515);
+	('Zen 94', 'zenbanque94@gmail.com', '94', '94000', 17515),
+	('Zen 75', 'zenbanque75@gmail.com', '75', '75000', 17515),
+    ('Zen 93', 'zenbanque93@gmail.com', '93', '93000', 17515),
+    ('Zen 91', 'zenbanque91@gmail.com', '91', '91000', 17515);
 
 create table comptes(numero_compte varchar(11) primary key,
 					libelle varchar(255),
@@ -79,22 +79,37 @@ create table commandes_chequiers(id int primary key auto_increment,
                     foreign key (individu_id) references individus(id),
 					foreign key (numero_compte_id) references comptes(numero_compte)
 					)engine=InnoDB default charset=UTF8;
-/*
-delimiter |
-create or replace trigger historisation on individus for each row
-   after update
-declare
-    var_modification varchar(255);
-begin
-    if old.nom <> new.nom then
-        var_modification := new.nom;
-    end if;
 
-    call historisation(old.id, var_modification);
-end |
-delimiter;
-*/
 delimiter |
+drop trigger if exists historisation|
+create trigger historisation after update on individus for each row
+begin
+	declare libelle varchar(255);
+	set libelle = 'Modification individu - ';
+	if old.adresse <> new.adresse and new.adresse is not null then
+		call historisation(old.id, concat(libelle, new.adresse));
+    end if;    
+	if old.portable <> new.portable then
+		if new.portable is null then 
+			call historisation(old.id, concat(libelle, 'Suppression du numéro de portable'));
+		else
+			call historisation(old.id, concat(libelle, new.portable));
+		end if;
+    end if;    
+	if old.code_postal <> new.code_postal and new.code_postal is not null then
+		call historisation(old.id, concat(libelle, new.code_postal));
+    end if;    
+	if old.ville <> new.ville and new.ville is not null then
+		call historisation(old.id, concat(libelle, new.ville));
+    end if;    
+	if old.fixe <> new.fixe then
+		if new.fixe is null then 
+			call historisation(old.id, concat(libelle, 'Suppression du numéro de fixe'));
+		else
+			call historisation(old.id, concat(libelle, new.fixe));
+		end if;
+    end if;
+end|
 
 /* CREATION DES FONCTIONS */
 drop function if exists creation_compte|
@@ -107,7 +122,7 @@ begin
 	declare	var_numero_compte_int bigint;
     declare	var_numero_compte_char varchar(11);
     declare var_agence_id int;
-	declare var_departement int;
+	declare var_departement char(2);
     /*
         La colonne numéro de compte est untype varchar de façon à avoir une longueur fixe car les int n'accepte pas les 0 devant
         On caste la colonne numero_compte pour faire un max+1 lors de la création de façon à avoir une gestion simplifiée de celui ci
@@ -187,7 +202,7 @@ create function creation_individu(
 	in_portable varchar(10),
 	in_fixe varchar(10),
 	in_adresse varchar(255),
-	in_code_postal int(5),
+	in_code_postal char(5),
 	in_ville varchar(255)
 )
 returns int
@@ -213,7 +228,7 @@ begin
     end;
 
     /* historisation */
-    call historisation(var_individu_id, 'CREATION');
+    call historisation(var_individu_id, concat('Création client ', in_nom_usage, ' ' , in_prenom));
 
     return var_individu_id;
 end|
@@ -304,10 +319,11 @@ begin
 end|
 
 /* INITIALISATION DES INDIVIDUS*/
-select creation_individu('MME', 'CABOT', 'CABOT', 'Sandra', '1978-05-03', 'scabot@hotmail.com', null, null, 'avenue du général de gaulle', 94160, 'SAINT MANDE')|
-select creation_individu('M', 'DUVERT', '', 'Alexandre', '1971-06-28', 'aduvert@noos.fr', null, null, '5 passage national', 75013, 'Paris 13')|
-select creation_individu('M', 'MARTINEZ', '', 'Arnaud', '1974-09-12', 'amartinez@gmail.com', null, null, 'avenue Albert Perrault', 94370, 'Sucy en Brie')|
-select creation_individu('M', 'ALI', '', 'Baba', '1971-06-28', 'ababa@hotmail.fr', null, null, '5 passage national', 92014, 'Nanterre')|
+select creation_individu('MME', 'CABOT', 'CABOT', 'Sandra', '1978-05-03', 'scabot@hotmail.com', '0630215469', null, 'avenue du général de gaulle', '94160', 'SAINT MANDE')|
+select creation_individu('M', 'DUVERT', '', 'Alexandre', '1971-06-28', 'aduvert@noos.fr', null, '0123654789', '5 passage national', '75013', 'Paris 13')|
+select creation_individu('M', 'MARTINEZ', '', 'Arnaud', '1974-09-12', 'amartinez@gmail.com', '0632156987', null, 'avenue Albert Perrault', '94370', 'Sucy en Brie')|
+select creation_individu('M', 'ALI', '', 'Baba', '1971-06-28', 'ababa@hotmail.fr', null, '0432569874', '5 passage national', '06100', 'Nice')|
+
 /* INITIALISATION DES MOUVEMENTS*/
 insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Salaire', 'C', '3256.25', '2017-12-28', 'V', '11111111111')|
 insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('EDF', 'D', '95.60', '2017-12-29', 'P', '11111111111')|
@@ -316,6 +332,13 @@ insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, n
 insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai3', 'D', '20', '2017-12-20', 'P', '11111111111')|
 insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai4', 'C', '12', '2017-12-22', 'P', '11111111111')|
 insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai5', 'D', '30', '2017-12-29', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai6', 'D', '30', '2017-12-29', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai7', 'D', '30', '2017-12-29', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai8', 'D', '30', '2017-12-29', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai9', 'D', '30', '2017-12-29', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai10', 'C', '300', '2017-12-29', 'P', '11111111111')|
+insert into mouvements(libelle, sens, montant, date_mouvement, type_mouvement, numero_compte_id) values ('Opération essai11', 'D', '30', '2017-12-29', 'P', '11111111111')|
+
  /* INITIALISATION DES BENEFICIAIRES*/
 insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 1', 1, 2, '11111111112')|
 insert into beneficiaires(libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id) values ('Mon beneficiaire 2', 1, 3, '11111111113')|
