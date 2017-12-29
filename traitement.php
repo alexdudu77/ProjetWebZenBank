@@ -75,7 +75,7 @@
     }
 
     function demandeVirement($id_compte_source, $id_compte_dest, $montant, $date, $motif){
-      $sql = "select demande_virement('".$id_compte_source."', '".$id_compte_dest."',".$montant.", '".$date."', '".$motif."') as erreur";
+      $sql = "select demande_virement('".$id_compte_source."', '".$id_compte_dest."',".$montant.", DATE_FORMAT('".$date."','%Y-%m-%d'), '".$motif."') as erreur";
       $requete = executeQuery($sql);
       $result = $requete->fetch_row();
       return $result[0];
