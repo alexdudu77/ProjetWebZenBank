@@ -380,7 +380,7 @@ create or replace view v_mouvements_comptes
     as select lc.individu_id, m.*
     from v_listes_comptes lc
     join mouvements m on m.numero_compte_id = lc.numero_compte
-    order by m.numero_compte_id, m.date_mouvement desc|
+    order by m.numero_compte_id, m.date_mouvement, m.libelle desc|
 
 create or replace view v_beneficiaires as
 	select b.individu_beneficiaire_id, i2.nom, i2.prenom, b.individu_source_id, b.libelle
