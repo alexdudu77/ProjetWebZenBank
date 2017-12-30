@@ -1,4 +1,7 @@
 <?php
+  if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+  }
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Controle sur la civilité qui ne peut être mise sur le composant directement
