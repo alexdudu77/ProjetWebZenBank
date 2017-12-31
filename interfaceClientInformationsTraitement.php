@@ -1,24 +1,27 @@
 <?php
   function afficherMesInformations($id_indiv)
   {
-    $sql = "select nom, prenom, email, portable, fixe, adresse, code_postal, ville from individus where id=".$id_indiv."";
+    $sql = "select nom, prenom, email, portable, fixe, adresse, code_postal, ville, mot_de_passe from individus where id=".$id_indiv."";
     $requete = executeQuery($sql);
 
     while ( $result = $requete->fetch_row() )
     {
       echo "<div class='form-group'>";
       echo "<label for='emailClient'>Nom</label>";
-      echo "<input type='email' class='form-control' id='nom' value=".$result[2]." readonly>";
+      echo "<input type='email' class='form-control' id='nom' value=".$result[0]." readonly>";
       echo "</div>";
       echo "<div class='form-group'>";
       echo "<label for='emailClient'>Prénom</label>";
-      echo "<input type='email' class='form-control' id='prenom' value='".$result[0]."' readonly>";
+      echo "<input type='email' class='form-control' id='prenom' value='".$result[1]."' readonly>";
       echo "</div>";
       echo "<div class='form-group'>";
       echo "<label for='emailClient'>E-mail</label>";
-      echo "<input type='email' class='form-control' id='emailClient' value='".$result[1]."' readonly>";
+      echo "<input type='email' class='form-control' id='emailClient' value='".$result[2]."' readonly>";
       echo "</div>";
-      echo "<h3 id='coordonnees'>Vos coordonnées</h3>";
+      echo "<div class='form-group'>";
+      echo "<label for='emailClient'>Mot de passe de connexion</label>";
+      echo "<input type='email' class='form-control' id='mdp' value='".$result[8]."' readonly>";
+      echo "</div>";
       echo "<div class='form-group'>";
       echo "<label for='adresseClient'>Adresse</label>";
       echo "<input type='text' class='form-control' name='adresseClient' value='".$result[5]."' required>";
