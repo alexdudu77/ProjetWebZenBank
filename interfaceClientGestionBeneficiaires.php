@@ -122,7 +122,7 @@
         <!-- Formulaire de gestion des bénéficiaires -->
       <form method="post" action="A MODIFIER.PHP">
         <div class="form-group" id="typeModification">
-            <input type="radio" id="ajouterBeneficiaire" name="typeModification">
+            <input type="radio" id="ajouterBeneficiaire" name="typeModification" value="ajouterBeneficiaire">
             <label>  Ajouter un b&eacute;n&eacute;ficiaire </label>
             <br>
             <div class="form-group">
@@ -139,7 +139,7 @@
               <input type="text" id="agenceBeneficiaire" size="30" maxlength="31" placeholder="Agence">
             </div>
             <br>
-            <input type="radio" id="supprimerBeneficiaire" name="typeModification">
+            <input type="radio" id="supprimerBeneficiaire" name="typeModification" value="supprimerBeneficiaire">
             <label>  Supprimer un b&eacute;n&eacute;ficiaire </label>
              <div class="form-group">
               <br>
