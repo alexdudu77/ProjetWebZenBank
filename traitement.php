@@ -13,9 +13,13 @@
     }
 
     function testExistanceClient($email){
-      $sql = "select id from individus where email = '".$email."'";
+      $sql = "select id, nom, prenom from individus where email = '".$email."'";
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);
+      if ($count==1){
+        $result = $requete->fetch_row();
+        initialiseVariablesSession($result[0], $result[1], $result[2]);
+      }
       return $count == 1;
     }
 

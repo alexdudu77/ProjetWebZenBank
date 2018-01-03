@@ -8,7 +8,7 @@
       $email = $_POST['identifiantClient'];
       if (testExistanceClient($email)){
         if (generationMDP($email)) {
-          header('Location:index.php');
+          header('Location:interfaceClientInformations.php');
         }
         else {
           $err = "Le login n'existe pas";
