@@ -131,22 +131,7 @@
             afficherComptesClient($_SESSION['id']);
           ?>
         </div>
-        <div id="totalSolde">
-          <h3>Total Solde</h3>
-          <span>xxx €</span>
-        </div>
       </div>
-
-  <!--    <table id="ComptesClient" class="table table-striped table-bordered" cellspacing="0" width="100%">
-
-          <tr>
-            <th>Libell&eacute;</th>
-            <th>Num&eacute;ro de compte</th>
-            <th>Solde</th>
-          </tr>
-
-
-        </table>-->
   </div>
 </div>
 
