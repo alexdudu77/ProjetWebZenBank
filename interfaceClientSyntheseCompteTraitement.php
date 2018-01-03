@@ -15,8 +15,8 @@
         echo("<td><a href=interfaceClientRIB.php?numcompte=".$compte."><input type='button' name='action' value='Editer RIB'/></a></td>");
         echo "</div>";
       }
-
-      $sql = "select solde_total from v_soldes_total_individu where individu_id=".$id_indiv."";
+      
+      $sql = "select sum(solde) as solde_total from v_soldes_comptes where individu_id=".$id_indiv." group by individu_id";
       $requete = executeQuery($sql);
       $result = $requete->fetch_row();
       echo "<div id='totalSolde'>";

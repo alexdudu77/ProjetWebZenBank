@@ -374,7 +374,8 @@ create or replace view v_soldes_comptes as
         from v_listes_comptes lc
         left join mouvements m on m.numero_compte_id = lc.numero_compte
         ) q
-    group by individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte|
+    group by individu_id, numero_compte, code_agence, code_banque, cle_rib, type_compte
+    order by individu_id, numero_compte|
 
 create or replace view v_mouvements_comptes
     as select lc.individu_id, m.*
@@ -399,16 +400,5 @@ create or replace view v_comptes_beneficiaires as
     join comptes c2 on c2.individu_id = i.id
     where c2.type_compte = 'E'
     order by libelle, nom, prenom|
-	
-create or replace view v_soldes_total_individu as
-select individu_id, round(sum(credit- (case when debit is null then 0 else debit end)),2) as solde_total
-from (
-	select lc.individu_id,  
-		case when m.sens = 'C' then sum(coalesce(montant, 0)) end as credit, 
-		case when m.sens = 'D' then sum(coalesce(montant, 0)) end as debit
-	from v_listes_comptes lc
-	left join mouvements m on m.numero_compte_id = lc.numero_compte
-	group by lc.numero_compte ) q
-group by individu_id|
 
 delimiter ;
