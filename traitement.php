@@ -54,14 +54,19 @@
       }
       return $count == 1;
     }
-
+    
     function generationMDP($email){
-      $sql = "select generation_mot_de_passe((select id from individus where email ='".$email."')) as mdp";
+      $sql = "SELECT id from individus where email ='".$email."'";
       $requete = executeQuery($sql);
-      $count = mysqli_num_rows($requete);
       $result = $requete->fetch_row();
-      $_SESSION['mdp'] = $result[0];
-      return $count == 1;
+      $id = $result[0];
+      if ($id != null) {
+        $sql = "UPDATE individus set
+                mot_de_passe = generation_mot_de_passe(".$id.")
+                where id = (".$id.")";
+        $requete = executeQuery($sql);
+      }
+      return $id != null;
     }
 
     function nouveauClient($titre, $nom, $prenom, $datenaissance, $email, $portable, $fixe, $adresse, $cp, $ville){

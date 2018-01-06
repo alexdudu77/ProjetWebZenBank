@@ -67,6 +67,7 @@
               }
             ?>
         </div>
+        <br>
         <div class="form-group">
           <label for="titre">Identifiant *</label>
           <input type="email" name="identifiantClient" id="identifiantClient" placeholder="Saisissez votre identifiant" size="30" required>
