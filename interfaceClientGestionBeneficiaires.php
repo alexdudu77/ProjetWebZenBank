@@ -10,8 +10,41 @@
   <link rel="stylesheet" type="text/css" href="styleInterfaceClient.css">
 </head>
 <body>
+<?php
+  include("interfaceClientEnTete.php");
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_POST["typeModification"]=='supprimerBeneficiaire') {
+      suppressionBeneficiaire($_POST["listeBeneficiaire"]);
+      $err = "Beneficiaire supprimé";
 
-<?php include("interfaceClientEnTete.php") ?>
+    }
+    if ($_POST["typeModification"]=="ajouterBeneficiaire") {
+      if (isset($_POST["numeroCompteBeneficiaire"])){
+
+
+          $numero_compte = $_POST["numeroCompteBeneficiaire"];
+          $code_banque = $_POST["codeBanqueBeneficiaire"];
+          $cle_rib = $_POST["cleRIBBeneficiaire"];
+          $code_guichet = $_POST["codeGuichetBeneficiaire"];
+
+          $id_beneficiaire = testExistenceCompteBeneficiaire($numero_compte, $code_banque, $cle_rib, $code_guichet);
+          if (isset($id_beneficiaire)) {
+
+            $libelle = $_POST["nomBeneficiaire"];
+            $id = $_SESSION['id'] ;
+
+            creationBeneficiaire($libelle, $id, $id_beneficiaire, $numero_compte);
+            $err = "Nouveau Beneficiaire créé";
+
+          } else {
+              $err = "Le Beneficiaire ne fait pas partie de la Banque";
+          }
+        }else{
+            $err = "Numero de compte obligatoire";
+          }
+      }
+    }
+ ?>
 
 <div class="container-fluid text-center">
 <!-- Menu latéral accordéon -->
@@ -120,34 +153,36 @@
       <br>
       <div class="col-md-7">
         <!-- Formulaire de gestion des bénéficiaires -->
-      <form method="post" action="A MODIFIER.PHP">
+      <form method="post" action="">
         <div class="form-group" id="typeModification">
-            <input type="radio" id="ajouterBeneficiaire" name="typeModification" value="ajouterBeneficiaire">
+          <div style="color:red">
+            <?php  if (isset($err)) { echo $err; } ?>
+          </div>
+          <br>
+            <input type="radio" id="ajouterBeneficiaire" name="typeModification" value="ajouterBeneficiaire" checked>
             <label>  Ajouter un b&eacute;n&eacute;ficiaire </label>
             <br>
             <div class="form-group">
               <label for="nomBeneficiaire">Nom du b&eacute;n&eacute;ficiaire</label>
-              <input type="text" class="form-control" id="nomBeneficiaire" placeholder="Saisir le nom du b&eacute;n&eacute;ficiaire" size="40" maxlength="30">
+              <input type="text" class="form-control" name="nomBeneficiaire" placeholder="Saisir le nom du b&eacute;n&eacute;ficiaire" size="40" maxlength="30">
             </div>
             <div class="form-group">
               <label for="IBAN b&eacute;n&eacute;ficiaire">IBAN du b&eacute;n&eacute;ficiaire</label>
               <br>
-              <input type="text" id="codeBanqueBeneficiaire" size="6" maxlength="5" placeholder="Banque">
-              <input type="text" id="codeGuichetBeneficiaire" size="6" maxlength="5" placeholder="Guichet">
-              <input type="text" id="numeroCompteBeneficiaire" size="14" maxlength="11" placeholder="Num&eacute;ro compte">
-              <input type="text" id="cleRIBBeneficiaire" size="3" maxlength="2" placeholder="RIB">
-              <input type="text" id="agenceBeneficiaire" size="30" maxlength="31" placeholder="Agence">
-            </div>
+              <input type="text" name="codeBanqueBeneficiaire" size="6" maxlength="5" placeholder="Banque">
+              <input type="text" name="codeGuichetBeneficiaire" size="6" maxlength="5" placeholder="Guichet">
+              <input type="text" name="numeroCompteBeneficiaire" size="14" maxlength="11" placeholder="Num&eacute;ro compte">
+              <input type="text" name="cleRIBBeneficiaire" size="3" maxlength="2" placeholder="RIB">
+  			</div>
             <br>
             <input type="radio" id="supprimerBeneficiaire" name="typeModification" value="supprimerBeneficiaire">
             <label>  Supprimer un b&eacute;n&eacute;ficiaire </label>
              <div class="form-group">
               <br>
-              <!-- Charger la liste des bénéficiaires externes -->
-              <select name="listeBeneficiare" id="listeBeneficiare">
-                <option value="beneficiaire1">beneficiaire1</option>
-                <option value="beneficiaire2">beneficiaire2</option>
-              </select>
+              <?php
+              require "interfaceClientGestionBeneficiairesTraitement.php";
+              afficherListeBeneficiaires ($_SESSION['id']);
+               ?>
             </div>
           </div>
         <br>

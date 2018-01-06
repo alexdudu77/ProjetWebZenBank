@@ -11,7 +11,28 @@
       $c->close();
       return $res;
     }
+	
+	function testExistenceCompteBeneficiaire($numero_compte, $code_banque, $cle_rib, $code_guichet){
+      $sql = "select individu_id from v_listes_comptes where numero_compte = '".$numero_compte."'
+														and code_agence = '".$code_guichet."'
+														and cle_rib = '".$cle_rib."'
+                            and code_banque = '".$code_banque."'";
+      $requete = executeQuery($sql);
+      $result = $requete->fetch_row();
+      return $result[0];
+    }
 
+    function creationBeneficiaire($libelle,$id_source,$id_beneficiaire,$num_compte){
+      $sql = "insert into beneficiaires (libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id)
+              values ('".$libelle."', ".$id_source.",".$id_beneficiaire.", '".$num_compte."')";
+      $requete = executeQuery($sql);
+    }
+
+    function suppressionBeneficiaire($id){
+      $sql = "delete from beneficiaires where id=".$id."";
+            $requete = executeQuery($sql);
+    }
+	
     function testExistanceClient($email){
       $sql = "select id, nom, prenom from individus where email = '".$email."'";
       $requete = executeQuery($sql);
