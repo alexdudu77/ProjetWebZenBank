@@ -11,8 +11,8 @@
       $c->close();
       return $res;
     }
-	
-	function testExistenceCompteBeneficiaire($numero_compte, $code_banque, $cle_rib, $code_guichet){
+
+    function testExistenceCompteBeneficiaire($numero_compte, $code_banque, $cle_rib, $code_guichet){
       $sql = "select individu_id from v_listes_comptes where numero_compte = '".$numero_compte."'
 														and code_agence = '".$code_guichet."'
 														and cle_rib = '".$cle_rib."'
@@ -32,8 +32,8 @@
       $sql = "delete from beneficiaires where id=".$id."";
             $requete = executeQuery($sql);
     }
-	
-    function testExistanceClient($email){
+
+    function testExistenceClient($email){
       $sql = "select id, nom, prenom from individus where email = '".$email."'";
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);

@@ -18,7 +18,7 @@
         require "traitement.php";
 
         $email = $_POST["emailClient"];
-        if (!testExistanceClient($email)) {
+        if (!testExistenceClient($email)) {
           $titre = $_POST["titre"];
           $nom =  $_POST["nomClient"];
           $prenom = $_POST["prenomClient"];
