@@ -383,17 +383,16 @@ create or replace view v_mouvements_comptes
     join mouvements m on m.numero_compte_id = lc.numero_compte
     order by m.numero_compte_id, m.date_mouvement, m.libelle desc|
 
-create or replace view v_beneficiaires as
-	select b.individu_beneficiaire_id, i2.nom, i2.prenom, b.individu_source_id, b.libelle
-	from beneficiaires b
-	join individus i on i.id = b.individu_source_id
-	join individus i2 on i2.id = b.individu_beneficiaire_id
-    order by b.libelle, i2.nom, i2.prenom|
-
+/* vue utilisée afin de pouvoir faire des virements sur mes comptes ou mes beneficiaires */
 create or replace view v_comptes_beneficiaires as
-	select b.id, b.libelle, c.numero_compte, individu_source_id
-	from beneficiaires b
+	select b.individu_beneficiaire_id, b.nom, b.prenom, b.individu_source_id, b.libelle, c.numero_compte
+	from v_beneficiaires b
     join comptes c on c.individu_id = b.individu_beneficiaire_id
-    order by libelle|
-
+    UNION ALL
+    select i.id, i.nom, i.prenom, i.id, concat('Mon compte ', c2.numero_compte), c2.numero_compte
+    from individus i
+    join comptes c2 on c2.individu_id = i.id
+    where c2.type_compte = 'E'
+    order by libelle, nom, prenom|
+	
 delimiter ;
