@@ -18,7 +18,7 @@
       $err = "Beneficiaire supprimé";
 
     }
-    if ($_POST["typeModification"]=="ajouterBeneficiaire") {
+    elseif ($_POST["typeModification"]=="ajouterBeneficiaire") {
       if (isset($_POST["numeroCompteBeneficiaire"])){
 
 
