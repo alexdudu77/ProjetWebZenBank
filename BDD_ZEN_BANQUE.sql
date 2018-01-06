@@ -391,14 +391,9 @@ create or replace view v_beneficiaires as
     order by b.libelle, i2.nom, i2.prenom|
 
 create or replace view v_comptes_beneficiaires as
-	select b.individu_beneficiaire_id, b.nom, b.prenom, b.individu_source_id, b.libelle, c.numero_compte
-	from v_beneficiaires b
+	select b.id, b.libelle, c.numero_compte, individu_source_id
+	from beneficiaires b
     join comptes c on c.individu_id = b.individu_beneficiaire_id
-    UNION ALL
-    select i.id, i.nom, i.prenom, i.id, concat('Mon compte ', c2.numero_compte), c2.numero_compte
-    from individus i
-    join comptes c2 on c2.individu_id = i.id
-    where c2.type_compte = 'E'
-    order by libelle, nom, prenom|
+    order by libelle|
 
 delimiter ;
