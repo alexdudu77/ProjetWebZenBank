@@ -12,8 +12,19 @@
       return $res;
     }
 
+    function testExistenceBeneficiaire($id_beneficiaire, $id_source, $numero_compte){
+      $sql = "SELECT libelle
+              FROM v_comptes_beneficiaires
+              WHERE individu_beneficiaire_id = ".$id_beneficiaire."
+                and individu_source_id = ".$id_source."
+                and numero_compte = '".$numero_compte."'";
+      $requete = executeQuery($sql);
+      $result = $requete->fetch_row();
+      return $result[0];
+    }
+
     function testExistenceCompteBeneficiaire($numero_compte, $code_banque, $cle_rib, $code_guichet){
-      $sql = "select individu_id from v_listes_comptes where numero_compte = '".$numero_compte."'
+      $sql = "SELECT individu_id from v_listes_comptes where numero_compte = '".$numero_compte."'
 														and code_agence = '".$code_guichet."'
 														and cle_rib = '".$cle_rib."'
                             and code_banque = '".$code_banque."'";
@@ -23,18 +34,18 @@
     }
 
     function creationBeneficiaire($libelle,$id_source,$id_beneficiaire,$num_compte){
-      $sql = "insert into beneficiaires (libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id)
+      $sql = "INSERT into beneficiaires (libelle, individu_source_id, individu_beneficiaire_id, numero_compte_id)
               values ('".$libelle."', ".$id_source.",".$id_beneficiaire.", '".$num_compte."')";
       $requete = executeQuery($sql);
     }
 
     function suppressionBeneficiaire($id){
-      $sql = "delete from beneficiaires where id=".$id."";
+      $sql = "DELETE from beneficiaires where id=".$id."";
             $requete = executeQuery($sql);
     }
 
     function testExistenceClient($email){
-      $sql = "select id, nom, prenom from individus where email = '".$email."'";
+      $sql = "SELECT id, nom, prenom from individus where email = '".$email."'";
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);
       if ($count==1){
@@ -51,10 +62,13 @@
       if ($count==1){
         $result = $requete->fetch_row();
         initialiseVariablesSession($result[0], $result[1], $result[2]);
+        /* Historisation de la connexion */
+        $sql = "SELECT historisation(".$result[0].", concat('Connexion de ', '".$result[1]."',' ', '".$result[2]."'))";
+        $requete = executeQuery($sql);
       }
       return $count == 1;
     }
-    
+
     function generationMDP($email){
       $sql = "SELECT id from individus where email ='".$email."'";
       $requete = executeQuery($sql);
@@ -70,7 +84,7 @@
     }
 
     function nouveauClient($titre, $nom, $prenom, $datenaissance, $email, $portable, $fixe, $adresse, $cp, $ville){
-      $sql = "select creation_individu('".$titre."', '".$nom."', '', '".$prenom."', '".$datenaissance."', '".$email."', '".$portable."', '".$fixe."', '".$adresse."', ".$cp.", '".$ville."') as id";
+      $sql = "SELECT creation_individu('".$titre."', '".$nom."', '', '".$prenom."', '".$datenaissance."', '".$email."', '".$portable."', '".$fixe."', '".$adresse."', ".$cp.", '".$ville."') as id";
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);
       if ($count==1){
@@ -84,35 +98,35 @@
     function nouveauCompte($type_compte){
       $id = $_SESSION['id'];
       $libelle_compte = "";
-      $sql = "select creation_compte(".$id.",'".$libelle_compte."','".$type_compte."')";
+      $sql = "SELECT creation_compte(".$id.",'".$libelle_compte."','".$type_compte."')";
       $requete = executeQuery($sql);
       $count = mysqli_num_rows($requete);
       return $count == 1;
     }
 
     function recuperationMDP(){
-      $sql = "select mot_de_passe from individus where id =".$_SESSION['id'];
+      $sql = "SELECT mot_de_passe from individus where id =".$_SESSION['id'];
       $requete = executeQuery($sql);
       $result = $requete->fetch_row();
       $_SESSION['mdp'] = $result[0];
     }
 
     function commandeChequier($id_compte, $nbr){
-      $sql = "select commande_chequiers(".$_SESSION['id'].", ".$id_compte."," .$nbr.")";
+      $sql = "SELECT commande_chequiers(".$_SESSION['id'].", ".$id_compte."," .$nbr.")";
       $requete = executeQuery($sql);
       $result = $requete->fetch_row();
       return $result[0];
     }
 
     function demandeVirement($id_compte_source, $id_compte_dest, $montant, $date, $motif){
-      $sql = "select demande_virement('".$id_compte_source."', '".$id_compte_dest."',".$montant.", DATE_FORMAT('".$date."','%Y-%m-%d'), '".$motif."') as erreur";
+      $sql = "SELECT demande_virement('".$id_compte_source."', '".$id_compte_dest."',".$montant.", DATE_FORMAT('".$date."','%Y-%m-%d'), '".$motif."') as erreur";
       $requete = executeQuery($sql);
       $result = $requete->fetch_row();
       return $result[0];
     }
 
     function miseAJourClient($id, $portable, $fixe, $adresse, $cp, $ville){
-      $sql = "update individus set portable = '".$portable."', fixe='".$fixe."', adresse='".$adresse."', code_postal='".$cp."', ville='".$ville."' where id = ".$id."";
+      $sql = "UPDATE individus set portable = '".$portable."', fixe='".$fixe."', adresse='".$adresse."', code_postal='".$cp."', ville='".$ville."' where id = ".$id."";
       $requete = executeQuery($sql);
       return $requete->error == "";
     }

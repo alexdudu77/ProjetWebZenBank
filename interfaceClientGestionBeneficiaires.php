@@ -15,35 +15,46 @@
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_POST["typeModification"]=='supprimerBeneficiaire') {
       suppressionBeneficiaire($_POST["listeBeneficiaire"]);
-      $err = "Beneficiaire supprimé";
+      $err = "Bénéficiaire supprimé";
 
     }
-    elseif ($_POST["typeModification"]=="ajouterBeneficiaire") {
-      if (isset($_POST["numeroCompteBeneficiaire"])){
+    if ($_POST["typeModification"]=="ajouterBeneficiaire") {
 
+        $numero_compte = $_POST["numeroCompteBeneficiaire"];
+        $code_banque = $_POST["codeBanqueBeneficiaire"];
+        $cle_rib = $_POST["cleRIBBeneficiaire"];
+        $code_guichet = $_POST["codeGuichetBeneficiaire"];
+        $libelle = $_POST["nomBeneficiaire"];
 
-          $numero_compte = $_POST["numeroCompteBeneficiaire"];
-          $code_banque = $_POST["codeBanqueBeneficiaire"];
-          $cle_rib = $_POST["cleRIBBeneficiaire"];
-          $code_guichet = $_POST["codeGuichetBeneficiaire"];
+        if ($libelle == ""){
+          $err = "Nom du bénéficiaire obligatoire";
+        }elseif ($code_banque  == ""){
+          $err = "Code banque obligatoire";
+        }elseif ($code_guichet  == "") {
+          $err = "Code guichet obligatoire";
+        }elseif ($numero_compte == "") {
+          $err = "Numéro de compte obligatoire";
+        }elseif ($cle_rib == "") {
+          $err = "Clé RIB obligatoire";
+        }
 
+        if (!isset($err)){
           $id_beneficiaire = testExistenceCompteBeneficiaire($numero_compte, $code_banque, $cle_rib, $code_guichet);
           if (isset($id_beneficiaire)) {
-
-            $libelle = $_POST["nomBeneficiaire"];
             $id = $_SESSION['id'] ;
-
-            creationBeneficiaire($libelle, $id, $id_beneficiaire, $numero_compte);
-            $err = "Nouveau Beneficiaire créé";
-
+            $libelle_beneficiaire = testExistenceBeneficiaire($id_beneficiaire, $id, $numero_compte);
+            if (!isset($libelle_beneficiaire)){
+              creationBeneficiaire($libelle, $id, $id_beneficiaire, $numero_compte);
+              $err = "Nouveau bénéficiaire créé";
+            }else{
+              $err = "Bénéficiaire déjà existant sous le nom ".$libelle_beneficiaire;
+            }
           } else {
               $err = "Le Beneficiaire ne fait pas partie de la Banque";
           }
-        }else{
-            $err = "Numero de compte obligatoire";
-          }
-      }
+        }
     }
+  }
  ?>
 
 <div class="container-fluid text-center">
@@ -159,32 +170,52 @@
             <?php  if (isset($err)) { echo $err; } ?>
           </div>
           <br>
-            <input type="radio" id="ajouterBeneficiaire" name="typeModification" value="ajouterBeneficiaire" checked>
-            <label>  Ajouter un b&eacute;n&eacute;ficiaire </label>
-            <br>
-            <div class="form-group">
-              <label for="nomBeneficiaire">Nom du b&eacute;n&eacute;ficiaire</label>
-              <input type="text" class="form-control" name="nomBeneficiaire" placeholder="Saisir le nom du b&eacute;n&eacute;ficiaire" size="40" maxlength="30">
-            </div>
-            <div class="form-group">
-              <label for="IBAN b&eacute;n&eacute;ficiaire">IBAN du b&eacute;n&eacute;ficiaire</label>
-              <br>
-              <input type="text" name="codeBanqueBeneficiaire" size="6" maxlength="5" placeholder="Banque">
-              <input type="text" name="codeGuichetBeneficiaire" size="6" maxlength="5" placeholder="Guichet">
-              <input type="text" name="numeroCompteBeneficiaire" size="14" maxlength="11" placeholder="Num&eacute;ro compte">
-              <input type="text" name="cleRIBBeneficiaire" size="3" maxlength="2" placeholder="RIB">
-  			</div>
-            <br>
-            <input type="radio" id="supprimerBeneficiaire" name="typeModification" value="supprimerBeneficiaire">
-            <label>  Supprimer un b&eacute;n&eacute;ficiaire </label>
-             <div class="form-group">
-              <br>
-              <?php
-              require "interfaceClientGestionBeneficiairesTraitement.php";
-              afficherListeBeneficiaires ($_SESSION['id']);
-               ?>
-            </div>
+          <input type="radio" id="ajouterBeneficiaire" name="typeModification" value="ajouterBeneficiaire" checked>
+          <label>  Ajouter un b&eacute;n&eacute;ficiaire </label>
+          <br>
+          <div class="form-group">
+            <label for="nomBeneficiaire">Nom du b&eacute;n&eacute;ficiaire</label>
+            <input type="text" class="form-control" name="nomBeneficiaire" placeholder="Saisir le nom du b&eacute;n&eacute;ficiaire" size="40" maxlength="30"
+              <?php if (isset($_POST['nomBeneficiaire'])) {
+                echo 'value="'.$_POST['nomBeneficiaire'].'"';
+              }?>
+            >
           </div>
+          <div class="form-group">
+            <label for="IBAN b&eacute;n&eacute;ficiaire">IBAN du b&eacute;n&eacute;ficiaire</label>
+            <br>
+            <input type="text" name="codeBanqueBeneficiaire" size="6" maxlength="5" placeholder="Banque"
+              <?php if (isset($_POST['codeBanqueBeneficiaire'])) {
+                echo 'value="'.$_POST['codeBanqueBeneficiaire'].'"';
+              }?>
+            >
+            <input type="text" name="codeGuichetBeneficiaire" size="6" maxlength="5" placeholder="Guichet"
+              <?php if (isset($_POST['codeGuichetBeneficiaire'])) {
+                echo 'value="'.$_POST['codeGuichetBeneficiaire'].'"';
+              }?>
+            >
+            <input type="text" name="numeroCompteBeneficiaire" size="14" maxlength="11" placeholder="Num&eacute;ro compte"
+              <?php if (isset($_POST['numeroCompteBeneficiaire'])) {
+                echo 'value="'.$_POST['numeroCompteBeneficiaire'].'"';
+              }?>
+            >
+            <input type="text" name="cleRIBBeneficiaire" size="3" maxlength="2" placeholder="RIB"
+              <?php if (isset($_POST['cleRIBBeneficiaire'])) {
+                echo 'value="'.$_POST['cleRIBBeneficiaire'].'"';
+              }?>
+            >
+  			  </div>
+          <br>
+          <input type="radio" id="supprimerBeneficiaire" name="typeModification" value="supprimerBeneficiaire">
+          <label>  Supprimer un b&eacute;n&eacute;ficiaire </label>
+           <div class="form-group">
+            <br>
+            <?php
+            require "interfaceClientGestionBeneficiairesTraitement.php";
+            afficherListeBeneficiaires ($_SESSION['id']);
+             ?>
+          </div>
+        </div>
         <br>
         <br>
         <a href="interfaceClientSyntheseCompte.php"><button type="button" class="btn btn-info">Annuler</button></a>
