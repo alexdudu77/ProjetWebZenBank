@@ -63,7 +63,7 @@
         $result = $requete->fetch_row();
         initialiseVariablesSession($result[0], $result[1], $result[2]);
         /* Historisation de la connexion */
-        $sql = "SELECT historisation(".$result[0].", concat('Connexion de ', '".$result[1]."',' ', '".$result[2]."'))";
+        $sql = "call historisation(".$result[0].", concat('Connexion de ', '".$result[1]."',' ', '".$result[2]."'))";
         $requete = executeQuery($sql);
       }
       return $count == 1;
