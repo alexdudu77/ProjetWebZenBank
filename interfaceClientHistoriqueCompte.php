@@ -123,7 +123,6 @@
     </div>
     <div class="col-md-9 text-left">
       <br>
-      <!-- A MODIFIER -->
       <form method="post" action="interfaceClientHistoriqueCompte.php">
         <p>
         <label for="listecompte">Choisissez un compte</label><br />

@@ -4,7 +4,7 @@ drop database if exists zenbanque ;
 create database if not exists zenbanque;
 use zenbanque;
 
-/* tables de principales */
+/* tables principales */
 create table individus(id int primary key auto_increment,
                     civilite char(3) not null, /* MME / M */
 					nom varchar(255) not null,
@@ -89,23 +89,23 @@ begin
 	set libelle = 'Modifications - ';
 	if old.adresse <> new.adresse and new.adresse is not null then
 		set modif = new.adresse;
-    end if;    
+    end if;
 	if old.portable <> new.portable then
-		if new.portable is null or new.portable = '' then 
+		if new.portable is null or new.portable = '' then
 			set modif = concat(modif, ' - Suppression du numéro de portable');
 		else
 			set modif = concat(modif, ' - ', new.portable);
 		end if;
-    end if;    
+    end if;
 	if old.code_postal <> new.code_postal and new.code_postal is not null then
 		set modif = concat(modif, ' - ', new.code_postal);
-    end if;    
+    end if;
 	if old.ville <> new.ville and new.ville is not null then
 		set modif = concat(modif, ' - ', new.ville);
-    end if;    
+    end if;
 	if old.fixe <> new.fixe then
-		if new.fixe is null or new.fixe = '' then 
-			set modif = concat(modif, ' - Suppression du numéro de fixe'); 
+		if new.fixe is null or new.fixe = '' then
+			set modif = concat(modif, ' - Suppression du numéro de fixe');
 		else
 			set modif = concat(modif, ' - ', new.fixe);
 		end if;
@@ -394,5 +394,5 @@ create or replace view v_comptes_beneficiaires as
     join comptes c2 on c2.individu_id = i.id
     where c2.type_compte = 'E'
     order by libelle|
-	
+
 delimiter ;

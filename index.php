@@ -4,7 +4,6 @@
   }
 
    if($_SERVER["REQUEST_METHOD"] == "POST") {
-      // username and password sent from form
       require "traitement.php";
 
       $myusername = $_POST['idClient'];

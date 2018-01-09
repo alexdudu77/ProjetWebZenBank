@@ -13,6 +13,7 @@
 <?php
   include("interfaceClientEnTete.php");
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Récupération de la valeur du radio bouton pour déterminer l'action à effectuer
     if ($_POST["typeModification"]=='supprimerBeneficiaire') {
       suppressionBeneficiaire($_POST["listeBeneficiaire"]);
       $err = "Bénéficiaire supprimé";
