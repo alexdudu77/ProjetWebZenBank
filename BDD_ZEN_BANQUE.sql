@@ -1,10 +1,22 @@
-/* ne fonction qu'en MySQL 5.7*/
+/* Pré requis : MySQL 5.7*/
 
 drop database if exists zenbanque ;
 create database if not exists zenbanque;
 use zenbanque;
 
-/* tables principales */
+/* Tables principales */
+
+/* 
+    Descriptions des tables :
+    •	"individus" stocke les clients et leurs coordonnées
+    •	"agences" stocke les agences, une par département
+    •	"comptes" stocke les comptes courant ou épargne
+    •	"beneficiaires" stocke les bénéficiaires des clients qui sont eux même des clients de l'agence
+    •	"mouvements" stocke les mouvements effectués sur les comptes clients
+    •	"historisation" stocke les connexions, création de compte, mouvements.... par individu
+    •	"commandes_chequiers" stocke les commandes de chéquiers des clients
+*/
+
 create table individus(id int primary key auto_increment,
                     civilite char(3) not null, /* MME / M */
 					nom varchar(255) not null,
@@ -116,6 +128,14 @@ begin
 end|
 
 /* CREATION DES FONCTIONS */
+
+/*
+    La fonction creation_compte() :
+        •	Créé le compte courant ou le compte épargne 
+        •	Alimente le compte courant avec 100 euros, 
+        •	Crée l'agence associée à son département si celle-ci n'existe pas
+        •	Historise la création du compte (function historisation())
+*/
 drop function if exists creation_compte|
 create function creation_compte(
     in_individu_id integer,
@@ -166,6 +186,9 @@ begin
     return var_numero_compte_char;
 end|
 
+/*
+    Fonction permettant l'historisation
+*/
 drop function if exists historisation|
 create procedure historisation(
     IN in_individu_id int,
@@ -174,6 +197,9 @@ begin
     insert into historisation(individu_id, date_heure, modification) values (in_individu_id, now(), in_modification);
 end|
 
+/*
+    La fonction generation_mot_de_passe() permet la génération du mot de passe du client et historise celle ci
+*/
 drop function if exists generation_mot_de_passe|
 create function generation_mot_de_passe(
     in_individu_id int)
@@ -195,6 +221,13 @@ begin
     return var_mot_de_passe;
 end|
 
+/* 
+    La fonction creation_individu() :
+    •	Crée l'individu, 
+    •	Créé son compte courant et l'alimente avec 100 euros (function creation_compte()), 
+    •	Génère le mot de passe (function generation_mot_de_passe())) de connexion
+    •	Historise la création de l'individu (function historisation())
+*/
 drop function if exists creation_individu|
 create function creation_individu(
     in_civilite char(3), /* MME / M */
@@ -237,6 +270,9 @@ begin
     return var_individu_id;
 end|
 
+/* 
+    La fonction commande_chequiers() enregistre la demande de chéquier et fait le contrôle qui empêche la commande de plus de 2 chéquiers dans le mois 
+*/
 drop function if exists commande_chequiers|
 create function commande_chequiers(
     in_individu_id int,
@@ -275,6 +311,9 @@ begin
     end if;
 end|
 
+/*
+    La fonction demande_virement() enregistre la demande de virement et contrôle que l'on peut faire celui ci en prenant en compte le découvert autorisé de 500 euros
+*/
 drop function if exists demande_virement|
 create function demande_virement(
     in_num_compte_source varchar(11),
